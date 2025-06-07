@@ -37,3 +37,14 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+##
+ios
+android
+scratch
+*old
+*copy**
+*copy.**
+*.env
+*.env**
+*.env.**
