@@ -18,7 +18,7 @@ export default function ScreenContainer({
   bottomSafeArea = false,
   leftSafeArea = true,
   rightSafeArea = true,
-  topSafeArea = false,
+  topSafeArea = true,
   ...props
 }: Props): React.JSX.Element {
   const edges = [
