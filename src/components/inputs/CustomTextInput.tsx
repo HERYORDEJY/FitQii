@@ -9,8 +9,9 @@ import {
   ViewStyle,
 } from "react-native";
 import { COLORS } from "~/constants/Colors";
+import { CustomTextInputProps } from "~/components/inputs/types";
 
-interface Props extends TextInputProps {
+interface Props extends CustomTextInputProps {
   label?: string;
   containerStyle?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
