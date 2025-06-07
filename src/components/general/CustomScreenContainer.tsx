@@ -14,7 +14,7 @@ interface Props extends PropsWithChildren {
   statusBar?: StatusBarProps;
 }
 
-export default function ScreenContainer({
+export default function CustomScreenContainer({
   bottomSafeArea = false,
   leftSafeArea = true,
   rightSafeArea = true,

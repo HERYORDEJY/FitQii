@@ -2,14 +2,13 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import CustomText from "~/components/general/CustomText";
 import { COLORS } from "~/constants/Colors";
-import ClockIcon from "~/components/svgs/ClockIcon";
-import ArrowRightIcon from "~/components/svgs/ArrowRightIcon";
 import Reanimated, {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/src/components/ReanimatedSwipeable";
+import RadioButtonIcon from "~/components/svgs/RadioButtonIcon";
 
 interface Props {
   item?: any; // TODO:: implement correct type
@@ -75,7 +74,6 @@ function ItemSwipeRightElement(
           style={styles.itemSwipeButtonText}
           color={"#FF0000"}
           fontFamily={"medium"}
-          numberOfLines={1}
         >
           Delete
         </CustomText>
@@ -84,7 +82,7 @@ function ItemSwipeRightElement(
   );
 }
 
-export default function TodaySessionListItem(props: Props): React.JSX.Element {
+export default function SessionsListItem(props: Props): React.JSX.Element {
   return (
     <View style={[styles.container]}>
       <GestureHandlerRootView>
@@ -98,19 +96,44 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
           renderLeftActions={(prog, drag) =>
             ItemSwipeLeftElement(prog, drag, props.item)
           }
-          containerStyle={{ backgroundColor: COLORS.background.card }}
+          // containerStyle={{ backgroundColor: COLORS.background.card }}
         >
           <View style={styles.contentContainer}>
+            <View style={styles.timeWrapper}>
+              <CustomText
+                fontFamily={"medium"}
+                fontSize={16}
+                color={COLORS.primary}
+              >
+                10:00 AM
+              </CustomText>
+              <CustomText
+                fontFamily={"regular"}
+                fontSize={12}
+                color={COLORS.text.tertiary}
+              >
+                45 min
+              </CustomText>
+            </View>
+            <View style={styles.separatorWrapper}>
+              <RadioButtonIcon />
+              <View style={[styles.separatorBar]} />
+            </View>
             <View style={styles.body}>
-              <CustomText fontFamily={"medium"}>System Setup</CustomText>
+              <CustomText
+                fontFamily={"medium"}
+                numberOfLines={1}
+                style={{ textAlignVertical: "top" }}
+              >
+                System Setup
+              </CustomText>
               <View style={styles.bodyBottom}>
-                <ClockIcon />
-                <CustomText fontFamily={"regular"} fontSize={12}>
-                  10:00 AM
-                </CustomText>
-                <ArrowRightIcon />
-                <CustomText fontFamily={"regular"} fontSize={12}>
-                  11:00 AM
+                <CustomText
+                  fontFamily={"regular"}
+                  fontSize={12}
+                  color={COLORS.text.tertiary}
+                >
+                  Host: John Doe
                 </CustomText>
               </View>
             </View>
@@ -124,18 +147,26 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
 const styles = StyleSheet.create({
   container: { borderRadius: 10, overflow: "hidden" },
   contentContainer: {
+    flexDirection: "row",
+    height: 63,
+    columnGap: 15,
+    backgroundColor: COLORS.background.screen,
+  },
+  timeWrapper: {
+    rowGap: 5,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  body: {
+    rowGap: 6,
     overflow: "hidden",
     borderRadius: 10,
     backgroundColor: COLORS.background.card,
     paddingBottom: 10,
-    paddingRight: 6,
-    paddingLeft: 40,
-    paddingTop: 5,
-    borderLeftWidth: 12,
-    borderLeftColor: COLORS.secondary,
-  },
-  body: {
-    rowGap: 6,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    height: "auto",
+    flex: 1,
   },
   bodyBottom: {
     flexDirection: "row",
@@ -154,5 +185,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLORS.background.screen,
     paddingHorizontal: 20,
+  },
+  separatorWrapper: {
+    alignItems: "center",
+    rowGap: 6,
+    justifyContent: "flex-start",
+  },
+  separatorBar: {
+    width: 3,
+    height: "100%",
+    borderRadius: 100,
+    backgroundColor: "#FFFFFF60",
   },
 });

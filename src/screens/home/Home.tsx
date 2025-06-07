@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import ScreenContainer from "~/components/general/ScreenContainer";
+import CustomScreenContainer from "~/components/general/CustomScreenContainer";
 import FitQiiLogoIcon1 from "~/components/svgs/FitQiiLogoIcon1";
 import FitQiiLogoName1 from "~/components/svgs/FitQiiLogoName1";
 import SearchInput from "~/components/inputs/SearchInput";
@@ -18,8 +18,9 @@ export default function Home(): React.JSX.Element {
   const handleNotificationPress = () => {
     // TODO:: implement notification action
   };
+
   return (
-    <ScreenContainer>
+    <CustomScreenContainer>
       {/*  Header */}
       <View style={[styles.header]}>
         <View style={[styles.navbar]}>
@@ -58,7 +59,7 @@ export default function Home(): React.JSX.Element {
       <TouchableOpacity style={[styles.plusIcon]} onPress={handleAddSession}>
         <PlusIcon />
       </TouchableOpacity>
-    </ScreenContainer>
+    </CustomScreenContainer>
   );
 }
 
