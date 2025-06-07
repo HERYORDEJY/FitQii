@@ -33,6 +33,76 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./src/assets/fonts/SpaceGrotesk-Light.ttf",
+            "./src/assets/fonts/SpaceGrotesk-Regular.ttf",
+            "./src/assets/fonts/SpaceGrotesk-Medium.ttf",
+            "./src/assets/fonts/SpaceGrotesk-SemiBold.ttf",
+            "./src/assets/fonts/SpaceGrotesk-Bold.ttf"
+          ],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Space Grotesk",
+                "fontDefinitions": [
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-Light.ttf",
+                    "weight": 300
+                  },
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-Regular.ttf",
+                    "weight": 400
+                  },
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-Medium.ttf",
+                    "weight": 500
+                  },
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "./assets/fonts/Inter-Bold.ttf",
+                    "weight": 700
+                  }
+                ]
+              }
+            ]
+          },
+          "ios": {
+            "fonts": [
+              {
+                "fontFamily": "Space Grotesk",
+                "fontDefinitions": [
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-Light.ttf",
+                    "weight": 300
+                  },
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-Regular.ttf",
+                    "weight": 400
+                  },
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-Medium.ttf",
+                    "weight": 500
+                  },
+                  {
+                    "path": "./src/assets/fonts/SpaceGrotesk-SemiBold.ttf",
+                    "weight": 600
+                  },
+                  {
+                    "path": "./assets/fonts/Inter-Bold.ttf",
+                    "weight": 700
+                  }
+                ]
+              }
+            ]
+          }
+        }
       ]
     ],
     "experiments": {
