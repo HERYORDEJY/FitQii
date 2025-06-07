@@ -9,3 +9,5 @@ export interface CustomTextInputProps extends TextInputProps {
   renderLeftElement?: React.ReactNode;
   renderRightElement?: React.ReactNode;
 }
+
+export type SelectOptionType = Record<string, any>;
