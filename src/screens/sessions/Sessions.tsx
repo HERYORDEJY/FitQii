@@ -30,7 +30,7 @@ export default function Sessions(): React.JSX.Element {
       <View style={[styles.header]}>
         <View style={[styles.navbar]}>
           <View style={[styles.navbarLeft]}>
-            <CustomText fontFamily={"medium"} fontSize={16}>
+            <CustomText fontFamily={"medium"} fontSize={22}>
               8 July, 2024
             </CustomText>
             <CustomText>Today</CustomText>

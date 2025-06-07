@@ -2,7 +2,6 @@ import React from "react";
 import {
   StyleProp,
   StyleSheet,
-  Text,
   TextInput,
   TextInputProps,
   View,
@@ -23,7 +22,9 @@ interface Props extends CustomTextInputProps {
 export default function CustomTextInput(props: Props): React.JSX.Element {
   return (
     <View style={[styles.container, props.containerStyle]}>
-      {props.label ? <Text style={[styles.label]}>{props.label}</Text> : null}
+      {props.label ? (
+        <CustomTextInput style={[styles.label]}>{props.label}</CustomTextInput>
+      ) : null}
       <View style={[styles.contentContainer, props.contentContainerStyle]}>
         {props.renderLeftElement}
         <TextInput

@@ -83,13 +83,21 @@ export default function SelectInput(props: Props): React.JSX.Element {
 
   return (
     <>
-      <TouchableOpacity onPress={handleOpenSelect} disabled={isDisabled}>
+      <TouchableOpacity
+        onPress={handleOpenSelect}
+        disabled={isDisabled}
+        style={styles.container}
+      >
+        {props.label ? (
+          <CustomText style={[styles.label]}>{props.label}</CustomText>
+        ) : null}
         <CustomTextInput
           {...props}
           placeholder={props.placeholder ?? "Select here"}
           renderRightElement={<ChevronDown />}
           pointerEvents={"none"}
           value={selectedOption?.label ?? selectedOption?.name}
+          label={undefined}
         />
       </TouchableOpacity>
 
@@ -113,7 +121,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    //
+    rowGap: 10,
   },
   item: {
     height: 40,
@@ -126,4 +134,5 @@ const styles = StyleSheet.create({
   contentContainer: {
     rowGap: 10,
   },
+  label: {},
 });
