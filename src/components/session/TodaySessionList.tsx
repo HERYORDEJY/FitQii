@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     rowGap: 12,
-    paddingBottom: 200,
+    paddingBottom: 220,
   },
 });
