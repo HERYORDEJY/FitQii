@@ -6,6 +6,7 @@ export const COLORS = {
         primary: "#FFFFFF",
         secondary: "#FFFFFF80",
         tertiary: "#FFFFFF60",
+        link: "#0961F5"
     },
     header: {
         text: {
