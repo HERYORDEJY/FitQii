@@ -9,10 +9,10 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import SessionsListItem from "~/components/session/SessionsListItem";
 import CustomText from "~/components/general/CustomText";
 import { addDays, format } from "date-fns";
 import { COLORS } from "~/constants/Colors";
+import TodaySessionListItem from "~/components/session/TodaySessionListItem";
 
 interface Props extends Partial<SectionListProps<any>> {
   // TODO:: implement correct ListRenderItem type
@@ -21,7 +21,7 @@ interface Props extends Partial<SectionListProps<any>> {
   selectedDate?: Date; // Optional prop to set the active date
 }
 
-export default function SessionsList(props: Props): React.JSX.Element {
+export default function HistoryList(props: Props): React.JSX.Element {
   const keyExtractor = useCallback((item: any, index: number) => {
     return `${item?.id} - ${index}`;
   }, []);
@@ -32,7 +32,7 @@ export default function SessionsList(props: Props): React.JSX.Element {
       const isLastItem = index === section.data.length - 1;
       return (
         <>
-          <SessionsListItem item={item} key={`${index}`} />
+          <TodaySessionListItem item={item} key={`${index}`} />
           {isLastItem ? <View style={[styles.headerLine]} /> : null}
         </>
       );
@@ -50,15 +50,8 @@ export default function SessionsList(props: Props): React.JSX.Element {
 
       return (
         <View style={styles.sectionHeader} key={`${index}`}>
-          <CustomText
-            fontFamily={"medium"}
-            fontSize={16}
-            color={isToday ? COLORS.secondary : "#FFF"}
-          >
-            {format(itemDate, "d MMM")}
-          </CustomText>
-          <CustomText color={isToday ? COLORS.secondary : "#FFF"}>
-            {isToday ? "Today" : ""}
+          <CustomText fontFamily={"medium"} fontSize={16} color={"#FFF"}>
+            {format(itemDate, "EEE, d MMMM, yyyy")}
           </CustomText>
           <View style={{ flex: 1 }} />
           <CustomText fontSize={12} color={COLORS.text.tertiary}>
@@ -94,7 +87,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     rowGap: 12,
-    paddingBottom: 320,
+    paddingBottom: 150,
   },
   sectionHeader: {
     flexDirection: "row",

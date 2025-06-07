@@ -1,7 +1,7 @@
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { SplashScreen } from "expo-router";
-import Sessions from "~/screens/sessions/Sessions";
+import History from "~/screens/history/History";
 
 export default function Index() {
   const [loaded, error] = useFonts({
@@ -22,5 +22,5 @@ export default function Index() {
     return null;
   }
 
-  return <Sessions />;
+  return <History />;
 }
