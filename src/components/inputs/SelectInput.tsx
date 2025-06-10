@@ -4,6 +4,7 @@ import {
   ListRenderItem,
   StyleSheet,
   TouchableOpacity,
+  View,
 } from "react-native";
 import CustomTextInput from "~/components/inputs/CustomTextInput";
 import {
@@ -49,21 +50,34 @@ export default function SelectInput(props: Props): React.JSX.Element {
   const renderItem: ListRenderItem<any> = useCallback(
     // TODO:: implement correct ListRenderItem type
     ({ item, index }) => {
-      const isSelected =
-        props.selectedOptionValue === item.id ||
-        props.selectedOptionValue === item.value;
+      const isSelected = Boolean(item.id)
+        ? props.selectedOptionValue === item.id
+        : props.selectedOptionValue === item.value;
       return (
         <TouchableOpacity
           key={`${item.id ?? item.value}-${index}`}
           onPress={() => handleSelectOption(item)}
           style={[
             styles.item,
-            isSelected && {
-              borderLeftColor: COLORS.primary,
-              backgroundColor: COLORS.primary + "20",
-            },
+            // isSelected && {
+            //   borderLeftColor: COLORS.primary,
+            //   backgroundColor: COLORS.primary + "20",
+            // },
           ]}
         >
+          <View
+            style={[
+              styles.itemRadioCheck,
+              isSelected && { borderColor: COLORS.secondary },
+            ]}
+          >
+            <View
+              style={[
+                styles.itemRadioCheckActive,
+                isSelected && { backgroundColor: COLORS.secondary },
+              ]}
+            />
+          </View>
           <CustomText>{item.label}</CustomText>
         </TouchableOpacity>
       );
@@ -73,11 +87,12 @@ export default function SelectInput(props: Props): React.JSX.Element {
 
   useEffect(() => {
     setSelectedOption(() => {
-      return props.options.find(
-        (option) =>
-          option.id === props.selectedOptionValue ||
-          option.value === props.selectedOptionValue,
-      );
+      return props.options.find((option) => {
+        if (Boolean(option.id)) {
+          return option.id === props.selectedOptionValue;
+        }
+        return option.value === props.selectedOptionValue;
+      });
     });
   }, [props.selectedOptionValue]);
 
@@ -111,6 +126,9 @@ export default function SelectInput(props: Props): React.JSX.Element {
               bounces={false}
               keyExtractor={keyExtractor}
               contentContainerStyle={[styles.contentContainer]}
+              ItemSeparatorComponent={() => (
+                <View style={[styles.itemSeparator]} />
+              )}
             />
           );
         }}
@@ -126,13 +144,35 @@ const styles = StyleSheet.create({
   item: {
     height: 40,
     flexDirection: "row",
-    borderLeftWidth: 6,
-    borderLeftColor: "transparent",
+    // borderLeftWidth: 6,
+    // borderLeftColor: "transparent",
     alignItems: "center",
     paddingHorizontal: 10,
+    columnGap: 10,
   },
   contentContainer: {
     rowGap: 10,
+    paddingBottom: 150,
   },
   label: {},
+  itemSeparator: {
+    height: 2,
+    width: "100%",
+    backgroundColor: "#00000020",
+  },
+  itemRadioCheck: {
+    height: 16,
+    width: 16,
+    borderRadius: 16,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#FFFFFF60",
+    padding: 2.5,
+  },
+  itemRadioCheckActive: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 16,
+    backgroundColor: "transparent",
+  },
 });

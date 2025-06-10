@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -11,6 +11,7 @@ import CustomText from "~/components/general/CustomText";
 import { COLORS } from "~/constants/Colors";
 import AddSessionStep1 from "~/components/session/AddSessionStep1";
 import { screenDimensions } from "~/utils/size-helpers";
+import AddSessionStep2 from "~/components/session/AddSessionStep2";
 
 interface Props {
   //
@@ -23,16 +24,12 @@ const FormSteps = [
   },
   {
     step: 2,
-    component: (props: any) => <AddSessionStep1 step={2} {...props} />,
-  },
-  {
-    step: 3,
-    component: (props: any) => <AddSessionStep1 step={2} {...props} />,
+    component: (props: any) => <AddSessionStep2 step={2} {...props} />,
   },
 ];
 
 export default function AddSession(props: Props): React.JSX.Element {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(2);
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [formData, setFormData] = useState<Record<string, any>>({
@@ -97,6 +94,13 @@ export default function AddSession(props: Props): React.JSX.Element {
     // setCurrentStep(stepIndex);
   };
 
+  useEffect(() => {
+    scrollViewRef.current?.scrollTo({
+      x: screenDimensions.width * currentStep,
+      animated: true,
+    });
+  }, []);
+
   return (
     <CustomScreenContainer bottomSafeArea={true}>
       <View style={[styles.header]}>
@@ -126,11 +130,13 @@ export default function AddSession(props: Props): React.JSX.Element {
         scrollEventThrottle={16}
       >
         {FormSteps.map((form, index) => {
+          const _step = `step${form.step}`,
+            stepData = formData[_step];
           return (
             <Fragment key={`${index}`}>
               {form.component({
                 onEnterData: handleSetFormData,
-                formData: formData["step1"],
+                formData: stepData,
               })}
             </Fragment>
           );

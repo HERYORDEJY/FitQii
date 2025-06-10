@@ -26,6 +26,7 @@ interface Props {
   backdropColor?: string;
   children: (data: any) => React.ReactNode;
   title?: string;
+  showHeader?: boolean;
 }
 
 // eslint-disable-next-line react/display-name
@@ -34,6 +35,7 @@ const BottomSheet = forwardRef<BottomSheetRef, Props>(
     {
       maxHeight = SCREEN_HEIGHT * 0.85,
       backdropColor = "rgba(0,0,0,0.4)",
+      showHeader = true,
       ...props
     },
     ref,
@@ -99,23 +101,25 @@ const BottomSheet = forwardRef<BottomSheetRef, Props>(
               },
             ]}
           >
-            <View style={styles.header}>
-              <View style={styles.titleWrapper}>
-                <CustomText
-                  fontSize={16}
-                  fontFamily={"bold"}
-                  numberOfLines={1}
-                  color={"#FFF"}
-                >
-                  {props.title ?? openParams?.title}
-                </CustomText>
+            {showHeader ? (
+              <View style={styles.header}>
+                <View style={styles.titleWrapper}>
+                  <CustomText
+                    fontSize={16}
+                    fontFamily={"bold"}
+                    numberOfLines={1}
+                    color={"#FFF"}
+                  >
+                    {props.title ?? openParams?.title}
+                  </CustomText>
+                </View>
+                <View style={styles.closeWrapper}>
+                  <Pressable onPress={animateOut} style={[styles.closeButton]}>
+                    <CloseIcon color={"#FFF"} />
+                  </Pressable>
+                </View>
               </View>
-              <View style={styles.closeWrapper}>
-                <Pressable onPress={animateOut} style={[styles.closeButton]}>
-                  <CloseIcon color={"#FFF"} />
-                </Pressable>
-              </View>
-            </View>
+            ) : null}
 
             <View onLayout={handleLayout}>{props.children(openParams)}</View>
           </Animated.View>

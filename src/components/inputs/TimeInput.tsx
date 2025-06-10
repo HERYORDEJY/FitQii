@@ -10,7 +10,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { format, isValid } from "date-fns";
 import { useBooleanValue } from "~/hooks/useBooleanValue";
-import CalendarIcon from "~/components/svgs/CalendarIcon";
+import AlarmClockIcon from "~/components/svgs/AlarmClockIcon";
 
 type Props = CustomTextInputProps & {
   selectTitle?: string;
@@ -19,7 +19,7 @@ type Props = CustomTextInputProps & {
   selectedDate: Date;
 };
 
-export default function DateInput(props: Props): React.JSX.Element {
+export default function TimeInput(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const sheetRef = useRef<BottomSheetRef>(null);
@@ -39,6 +39,7 @@ export default function DateInput(props: Props): React.JSX.Element {
   };
 
   const handleOpenSelect = () => {
+    setSelectedDate(props.selectedDate ?? new Date());
     if (Platform.OS === "ios") {
       sheetRef.current?.open({
         title: "Hello World",
@@ -68,12 +69,12 @@ export default function DateInput(props: Props): React.JSX.Element {
     }
   };
 
-  const renderPicker = () => {
+  const renderPicker = useCallback(() => {
     return (
       <DateTimePicker
         minimumDate={new Date()}
-        value={props.selectedDate ?? new Date()}
-        mode={"date"}
+        value={selectedDate ?? props.selectedDate ?? new Date()}
+        mode={"time"}
         display={"spinner"}
         accentColor={COLORS.primary}
         textColor="#FFF"
@@ -87,7 +88,7 @@ export default function DateInput(props: Props): React.JSX.Element {
         onChange={handlePickerChange}
       />
     );
-  };
+  }, [props.selectedDate]);
 
   return (
     <>
@@ -101,15 +102,15 @@ export default function DateInput(props: Props): React.JSX.Element {
         ) : null}
         <CustomTextInput
           {...props}
-          renderRightElement={<CalendarIcon />}
+          renderRightElement={<AlarmClockIcon />}
           pointerEvents={"none"}
           value={
             isValid(props.selectedDate)
-              ? format(props.selectedDate!, "dd/MM/yy")
+              ? format(props.selectedDate!, "hh:mm a")
               : undefined
           }
           label={undefined}
-          placeholder={props.placeholder ?? "DD/MM/YY"}
+          placeholder={props.placeholder ?? "HH:MM"}
           editable={false}
         />
       </TouchableOpacity>
