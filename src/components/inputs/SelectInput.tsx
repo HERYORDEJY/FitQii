@@ -19,7 +19,7 @@ import { COLORS } from "~/constants/Colors";
 
 type Props = CustomTextInputProps & {
   selectTitle?: string;
-  options: SelectOptionType[];
+  options: Array<SelectOptionType>;
   disabled?: boolean;
   onSelectOption: (option: SelectOptionType) => void;
   selectedOptionValue: string;
@@ -50,9 +50,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
   const renderItem: ListRenderItem<any> = useCallback(
     // TODO:: implement correct ListRenderItem type
     ({ item, index }) => {
-      const isSelected = Boolean(item.id)
-        ? props.selectedOptionValue === item.id
-        : props.selectedOptionValue === item.value;
+      const isSelected = props.selectedOptionValue === item.value;
       return (
         <TouchableOpacity
           key={`${item.id ?? item.value}-${index}`}
@@ -88,9 +86,6 @@ export default function SelectInput(props: Props): React.JSX.Element {
   useEffect(() => {
     setSelectedOption(() => {
       return props.options.find((option) => {
-        if (Boolean(option.id)) {
-          return option.id === props.selectedOptionValue;
-        }
         return option.value === props.selectedOptionValue;
       });
     });

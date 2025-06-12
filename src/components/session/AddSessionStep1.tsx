@@ -21,6 +21,7 @@ export default function AddSessionStep1(props: Props): React.JSX.Element {
       <ScrollView contentContainerStyle={[styles.contentContainer]}>
         <CustomTextInput
           placeholder={"Session Name"}
+          value={props.formData.name}
           textInputStyle={{ fontSize: 22, fontFamily: "bold" }}
           contentContainerStyle={{
             backgroundColor: "transparent",

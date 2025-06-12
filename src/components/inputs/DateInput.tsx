@@ -73,8 +73,12 @@ export default function DateInput(props: Props): React.JSX.Element {
   const renderPicker = () => {
     return (
       <DateTimePicker
-        minimumDate={props.minimumDate ?? new Date()}
-        maximumDate={props.maximumDate}
+        minimumDate={
+          props.minimumDate ? new Date(props.minimumDate) : new Date()
+        }
+        maximumDate={
+          props.maximumDate ? new Date(props.maximumDate) : undefined
+        }
         value={props.selectedDate ?? selectedDate!}
         mode={"date"}
         display={"spinner"}

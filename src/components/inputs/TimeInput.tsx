@@ -72,11 +72,15 @@ export default function TimeInput(props: Props): React.JSX.Element {
     }
   };
 
-  const renderPicker = useCallback(() => {
+  const renderPicker = () => {
     return (
       <DateTimePicker
-        minimumDate={props.minimumDate ?? new Date()}
-        maximumDate={props.maximumDate}
+        minimumDate={
+          props.minimumDate ? new Date(props.minimumDate) : new Date()
+        }
+        maximumDate={
+          props.maximumDate ? new Date(props.maximumDate) : undefined
+        }
         value={props.selectedDate ?? selectedDate!}
         mode={"time"}
         display={"spinner"}
@@ -92,7 +96,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
         onChange={handlePickerChange}
       />
     );
-  }, [props.selectedDate]);
+  };
 
   return (
     <>

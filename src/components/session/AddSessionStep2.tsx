@@ -8,7 +8,8 @@ import TimeInput from "~/components/inputs/TimeInput";
 import CustomText from "~/components/general/CustomText";
 import SelectInput from "~/components/inputs/SelectInput";
 import { Timezones } from "~/data/timezones";
-import { SelectOptionType } from "~/components/inputs/types";
+import { addMinutes, isAfter } from "date-fns";
+import { ReminderOptions, RepetitionOptions } from "~/data/add-session-options";
 
 interface Props {
   step: number;
@@ -46,6 +47,7 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
               onSelectDate={(date) => handleEnterData("end_date", date)}
               selectedDate={props.formData?.end_date}
               containerStyle={{ flex: 1 }}
+              minimumDate={props.formData?.start_date}
             />
           </View>
         </View>
@@ -67,19 +69,23 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
               onSelectDate={(date) => handleEnterData("end_time", date)}
               selectedDate={props.formData?.end_time}
               containerStyle={{ flex: 1 }}
-              maximumDate={props.formData?.start_time}
+              minimumDate={
+                isAfter(new Date(), props.formData?.start_time)
+                  ? addMinutes(new Date(), 1)
+                  : addMinutes(props.formData?.start_time, 1)
+              }
             />
           </View>
         </View>
 
         <View style={[styles.fieldGroup]}>
-          <CustomText>Duration</CustomText>
+          <CustomText>Timezone</CustomText>
           <SelectInput
             options={Timezones}
             onSelectOption={(option) =>
-              handleEnterData("duration", option.value)
+              handleEnterData("timezone", option.value)
             }
-            selectedOptionValue={props.formData?.duration}
+            selectedOptionValue={props.formData?.timezone}
             containerStyle={{ flex: 1 }}
             selectTitle={"Select timezone"}
           />
@@ -136,8 +142,8 @@ const styles = StyleSheet.create({
   },
   sessionTitleWrapper: {
     borderLeftWidth: 6,
-    borderLeftColor: COLORS.primary,
-    backgroundColor: COLORS.primary + 30,
+    borderLeftColor: COLORS.primary + 20,
+    backgroundColor: COLORS.primary + 10,
     borderRadius: 0,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -146,45 +152,3 @@ const styles = StyleSheet.create({
     //
   },
 });
-
-const ReminderOptions: Array<SelectOptionType> = [
-  {
-    label: "At time of event",
-    value: 0,
-  },
-  {
-    label: "10 min before",
-    value: 10 * 60,
-  },
-  {
-    label: "1 hour before",
-    value: 1 * 60 * 60,
-  },
-  {
-    label: "1 day before",
-    value: 1 * 24 * 60 * 60,
-  },
-];
-
-const RepetitionOptions: Array<SelectOptionType> = [
-  {
-    label: "Don't repeat",
-    value: 0,
-  },
-  {
-    label: "Every 1 day",
-    value: 1 * 24 * 60 * 60,
-  },
-  {
-    label: "Every 1 week",
-    value: 7 * 24 * 60 * 60,
-  },
-  {
-    label: "Every 1 month",
-    value: 30 * 24 * 60 * 60,
-  },
-  {
-    label: "Every 1 year",
-    value: 365 * 24 * 60 * 60,
-  },
-];

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { COLORS } from "~/constants/Colors";
 import { CustomTextInputProps } from "~/components/inputs/types";
+import CustomText from "~/components/general/CustomText";
 
 interface Props extends CustomTextInputProps {
   label?: string;
@@ -23,7 +24,7 @@ export default function CustomTextInput(props: Props): React.JSX.Element {
   return (
     <View style={[styles.container, props.containerStyle]}>
       {props.label ? (
-        <CustomTextInput style={[styles.label]}>{props.label}</CustomTextInput>
+        <CustomText style={[styles.label]}>{props.label}</CustomText>
       ) : null}
       <View style={[styles.contentContainer, props.contentContainerStyle]}>
         {props.renderLeftElement}

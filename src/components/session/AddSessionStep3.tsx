@@ -125,30 +125,36 @@ export default function AddSessionStep3(props: Props): React.JSX.Element {
 
         {props.formData.mode === "online" ? (
           <CustomTextInput
+            label={"Link"}
             placeholder={"Add session link here"}
             cursorColor={COLORS.primary}
             autoFocus={true}
             onChangeText={(text) => handleEnterData("link", text)}
             renderRightElement={<LinkIcon />}
             value={props.formData?.link}
+            autoCorrect={false}
+            autoComplete={"url"}
+            autoCapitalize={"none"}
           />
         ) : null}
 
-        <View style={[styles.fieldGroup]}>
-          <CustomText>Location</CustomText>
-          <CustomTextInput
-            placeholder={"Enter location here"}
-            onChangeText={(text) => handleEnterData("location", text)}
-            renderRightElement={<LocationIcon />}
-            value={props.formData?.location}
-          />
-        </View>
+        {props.formData.mode === "offline" ? (
+          <View style={[styles.fieldGroup]}>
+            <CustomTextInput
+              label={"Location"}
+              placeholder={"Enter location here"}
+              onChangeText={(text) => handleEnterData("location", text)}
+              renderRightElement={<LocationIcon />}
+              value={props.formData?.location}
+            />
+          </View>
+        ) : null}
 
         <View style={[styles.fieldGroup]}>
           <CustomText>Description (optional)</CustomText>
           <CustomTextInput
             placeholder={"You can add note or description about session"}
-            onChangeText={(text) => handleEnterData("location", text)}
+            onChangeText={(text) => handleEnterData("description", text)}
             contentContainerStyle={{ height: 100 }}
             multiline={true}
             textInputStyle={{
@@ -224,8 +230,8 @@ const styles = StyleSheet.create({
   },
   sessionTitleWrapper: {
     borderLeftWidth: 6,
-    borderLeftColor: COLORS.primary,
-    backgroundColor: COLORS.primary + 30,
+    borderLeftColor: COLORS.primary + 20,
+    backgroundColor: COLORS.primary + 10,
     borderRadius: 0,
     paddingHorizontal: 10,
     paddingVertical: 5,

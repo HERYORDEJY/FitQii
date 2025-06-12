@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import React, { Fragment, useMemo, useRef, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -14,6 +14,8 @@ import { screenDimensions } from "~/utils/size-helpers";
 import AddSessionStep2 from "~/components/session/AddSessionStep2";
 import AddSessionStep3 from "~/components/session/AddSessionStep3";
 import PlusIcon from "~/components/svgs/PlusIcon";
+import AddSessionStep4 from "~/components/session/AddSessionStep4";
+import { urlRegex } from "~/utils/regex-helpers";
 
 interface Props {
   //
@@ -32,10 +34,14 @@ const FormSteps = [
     step: 3,
     component: (props: any) => <AddSessionStep3 step={3} {...props} />,
   },
+  {
+    step: 4,
+    component: (props: any) => <AddSessionStep4 step={4} {...props} />,
+  },
 ];
 
 export default function AddSession(props: Props): React.JSX.Element {
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(1);
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [formData, setFormData] = useState<Record<string, any>>({
@@ -44,14 +50,37 @@ export default function AddSession(props: Props): React.JSX.Element {
     step3: {},
     step4: {},
   });
-  console.log("\n\n formData :>> \t\t", formData, "\n\n---");
+
   const canGoNext = useMemo(() => {
     if (currentStep === 1) {
       return Boolean(formData.step1.name) && Boolean(formData.step1.category);
     }
+    if (currentStep === 2) {
+      return (
+        Boolean(formData.step2.start_date) &&
+        Boolean(formData.step2.start_time) &&
+        Boolean(formData.step2.end_date) &&
+        Boolean(formData.step2.end_time) &&
+        Boolean(formData.step2.timezone) &&
+        Boolean(formData.step2.reminder) &&
+        Boolean(formData.step2.repetition)
+      );
+    }
+    if (currentStep === 3) {
+      return (
+        Boolean(formData.step3.mode) &&
+        ((Boolean(formData.step3.link) &&
+          `${formData.step3.link}`.match(urlRegex)) ||
+          Boolean(formData.step3.location))
+      );
+    }
+
+    if (currentStep === 4) {
+      return true;
+    }
 
     return false;
-  }, [currentStep, formData.step1]);
+  }, [currentStep, formData]);
 
   const handleSetFormData = (step: number, data: any) => {
     setFormData((prevState) => {
@@ -100,12 +129,14 @@ export default function AddSession(props: Props): React.JSX.Element {
     // setCurrentStep(stepIndex);
   };
 
+  /*
   useEffect(() => {
     scrollViewRef.current?.scrollTo({
       x: screenDimensions.width * currentStep,
       animated: true,
     });
   }, []);
+*/
 
   return (
     <CustomScreenContainer bottomSafeArea={true}>
@@ -122,7 +153,7 @@ export default function AddSession(props: Props): React.JSX.Element {
         <View style={[styles.headerTitleBar]}>
           <PlusIcon />
           <CustomText fontSize={22} fontFamily={"medium"}>
-            Add Session
+            Add Session {currentStep === 4 ? "(Preview)" : ""}
           </CustomText>
         </View>
       </View>
@@ -145,7 +176,10 @@ export default function AddSession(props: Props): React.JSX.Element {
             <Fragment key={`${index}`}>
               {form.component({
                 onEnterData: handleSetFormData,
-                formData: { ...stepData, name: formData?.["step1"]?.name },
+                formData:
+                  form.step === 4
+                    ? { ...formData }
+                    : { ...stepData, name: formData?.["step1"]?.name },
               })}
             </Fragment>
           );
@@ -225,3 +259,33 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
+
+const _data = {
+  formData: {
+    step1: { name: "H", category: "gym" },
+    step2: {
+      start_time: "2025-06-12T10:01:30.000Z",
+      end_time: "2025-06-12T10:02:30.000Z",
+      start_date: "2025-07-12T10:02:03.000Z",
+      end_date: "2025-07-12T10:02:03.000Z",
+      timezone: "-07:00",
+      reminder: 600,
+      repetition: 2592000,
+    },
+    step3: {
+      mode: "offline",
+      location: "Ilorin Nigeria",
+      description: "No decription",
+      attachments: [
+        {
+          size: 2543770,
+          mimeType: "application/pdf",
+          name: "Google claims new Gemini AI 'thinks more carefully' - BBC News.pdf",
+          uri: "file:///Users/heryordejy/Library/Developer/CoreSimulator/Devices/D6FE8D2D-97C7-4601-B60A-5ED501805700/data/Containers/Data/Application/FBD3FA7D-A9B9-43D0-829D-16EA6F870253/Library/Caches/ExponentExperienceData/@anonymous/FitQii-7e4ed325-d993-42df-aafd-9502b9dd71f7/DocumentPicker/2CD670D2-46F3-412B-8EB0-FA1AABAC25C8.pdf",
+        },
+      ],
+    },
+    step4: {},
+  },
+  currentStep: 4,
+};
