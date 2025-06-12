@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import TodaySessionListItem from "~/components/session/TodaySessionListItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SessionItemDataType } from "~/components/session/types";
 
 interface Props extends Partial<FlatListProps<any>> {
   // TODO:: implement correct ListRenderItem type
@@ -24,8 +25,7 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
     return `${item?.id} - ${index}`;
   }, []);
 
-  const renderItem: ListRenderItem<any> = useCallback(
-    // TODO:: implement correct ListRenderItem type
+  const renderItem: ListRenderItem<SessionItemDataType> = useCallback(
     ({ item, index }) => {
       return <TodaySessionListItem item={item} key={index} />;
     },
@@ -36,7 +36,7 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
     <FlatList
       {...props}
       style={[styles.container, props.containerStyle]}
-      data={[...Array(10).keys()]} // TODO:: add actual data
+      data={data} // TODO:: add actual data
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       contentContainerStyle={[
@@ -57,3 +57,5 @@ const styles = StyleSheet.create({
     paddingBottom: 220,
   },
 });
+
+const data = [] as Array<any>; // TODO:: remove

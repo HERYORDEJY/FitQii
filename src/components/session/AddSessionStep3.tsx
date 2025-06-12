@@ -49,7 +49,6 @@ export default function AddSessionStep3(props: Props): React.JSX.Element {
     }
   };
 
-  // TODO:: implement the correct attachment type
   const handleDeleteAttachment = (
     index: number,
     attachment: DocumentPicker.DocumentPickerAsset,

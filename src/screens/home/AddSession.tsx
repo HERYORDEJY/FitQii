@@ -292,3 +292,28 @@ const _data = {
   },
   currentStep: 4,
 };
+
+const yy = {
+  name: "H",
+  category: "gym",
+  start_time: "2025-06-12T10:01:30.000Z",
+  end_time: "2025-06-12T10:02:30.000Z",
+  start_date: "2025-07-12T10:02:03.000Z",
+  end_date: "2025-07-12T10:02:03.000Z",
+  timezone: "-07:00",
+  reminder: 600,
+  repetition: 2592000,
+
+  mode: "offline",
+  location: "Ilorin Nigeria",
+  link: null,
+  description: "No decription",
+  attachments: [
+    {
+      size: 2543770,
+      mimeType: "application/pdf",
+      name: "Google claims new Gemini AI 'thinks more carefully' - BBC News.pdf",
+      uri: "file:///Users/heryordejy/Library/Developer/CoreSimulator/Devices/D6FE8D2D-97C7-4601-B60A-5ED501805700/data/Containers/Data/Application/FBD3FA7D-A9B9-43D0-829D-16EA6F870253/Library/Caches/ExponentExperienceData/@anonymous/FitQii-7e4ed325-d993-42df-aafd-9502b9dd71f7/DocumentPicker/2CD670D2-46F3-412B-8EB0-FA1AABAC25C8.pdf",
+    },
+  ],
+};

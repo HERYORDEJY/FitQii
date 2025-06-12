@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import {
+  DefaultSectionT,
   SectionList,
   SectionListData,
   SectionListProps,
@@ -14,9 +15,9 @@ import CustomText from "~/components/general/CustomText";
 import { addDays, format } from "date-fns";
 import { COLORS } from "~/constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SessionItemDataType } from "~/components/session/types";
 
-interface Props extends Partial<SectionListProps<any>> {
-  // TODO:: implement correct ListRenderItem type
+interface Props extends Partial<SectionListProps<SessionItemDataType>> {
   containerStyle?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   selectedDate?: Date; // Optional prop to set the active date
@@ -30,8 +31,7 @@ export default function SessionsList(props: Props): React.JSX.Element {
     return `${item?.id} - ${index}`;
   }, []);
 
-  const renderItem: SectionListRenderItem<any> = useCallback(
-    // TODO:: implement correct ListRenderItem type
+  const renderItem: SectionListRenderItem<SessionItemDataType> = useCallback(
     ({ item, index, section }) => {
       const isLastItem = index === section.data.length - 1;
       return (
@@ -45,8 +45,11 @@ export default function SessionsList(props: Props): React.JSX.Element {
   );
 
   const renderSectionHeader = useCallback(
-    // TODO:: implement correct ListRenderItem type   //<Item, Section>
-    ({ section: { title, index } }: { section: SectionListData<any, any> }) => {
+    ({
+      section: { title, index },
+    }: {
+      section: SectionListData<SessionItemDataType, DefaultSectionT>;
+    }) => {
       const sectionIndex = sections.findIndex((s) => s.title === title);
       const itemDate = addDays(new Date(), sectionIndex);
       const isToday =
@@ -77,10 +80,9 @@ export default function SessionsList(props: Props): React.JSX.Element {
 
   return (
     <SectionList
-      sections={sections}
+      sections={[]} // TODO:: add actual data
       {...props}
       style={[styles.container, props.containerStyle]}
-      data={[...Array(10).keys()]} // TODO:: add actual data
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       contentContainerStyle={[
@@ -116,29 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const sections = [
-  {
-    title: "Section 1",
-    data: ["Item 1", "Item 2"],
-  },
-  {
-    title: "Section 2",
-    data: ["Item 3", "Item 4", "Item 5"],
-  },
-  {
-    title: "Section 3",
-    data: ["Item 6"],
-  },
-  {
-    title: "Section 4",
-    data: ["Item 1", "Item 2"],
-  },
-  {
-    title: "Section 5",
-    data: ["Item 3", "Item 4", "Item 5"],
-  },
-  {
-    title: "Section 6",
-    data: ["Item 6"],
-  },
-];
+const sections = [] as Array<any>; // TODO:: remove

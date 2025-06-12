@@ -10,15 +10,16 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/src/components/ReanimatedSwipeable";
+import { SessionItemDataType } from "~/components/session/types";
 
 interface Props {
-  item?: any; // TODO:: implement correct type
+  item: SessionItemDataType;
 }
 
 function ItemSwipeLeftElement(
   prog: SharedValue<number>,
   drag: SharedValue<number>,
-  item: Record<string, any>,
+  item: SessionItemDataType,
 ) {
   const styleAnimation = useAnimatedStyle(() => {
     // console.log("showRightProgress:", prog.value);

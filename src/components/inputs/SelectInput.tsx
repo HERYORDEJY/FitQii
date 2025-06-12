@@ -47,8 +47,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
     sheetRef.current?.close();
   };
 
-  const renderItem: ListRenderItem<any> = useCallback(
-    // TODO:: implement correct ListRenderItem type
+  const renderItem: ListRenderItem<SelectOptionType> = useCallback(
     ({ item, index }) => {
       const isSelected = props.selectedOptionValue === item.value;
       return (

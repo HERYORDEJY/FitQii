@@ -1,11 +1,10 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import SearchInput from "~/components/inputs/SearchInput";
 import CustomScreenContainer from "~/components/general/CustomScreenContainer";
 import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
 import { getWeekDates } from "~/utils/date-helpers";
-import NotificationBellIcon from "~/components/svgs/NotificationBellIcon";
 import HistoryList from "~/components/session/HistoryList";
 
 export default function History(): React.JSX.Element {
@@ -13,10 +12,6 @@ export default function History(): React.JSX.Element {
 
   const handleSearchSession = () => {
     // TODO:: implement search for session
-  };
-
-  const handleNotificationPress = () => {
-    // TODO:: implement notification action
   };
 
   return (
@@ -28,16 +23,6 @@ export default function History(): React.JSX.Element {
             <CustomText fontFamily={"medium"} fontSize={22}>
               Session History
             </CustomText>
-          </View>
-
-          <View style={[styles.navbarRight]}>
-            <TouchableOpacity
-              style={[styles.notificationButton]}
-              onPress={handleNotificationPress}
-            >
-              <NotificationBellIcon />
-              <View style={[styles.notificationIndicator]} />
-            </TouchableOpacity>
           </View>
         </View>
         <SearchInput
