@@ -16,6 +16,7 @@ import AddSessionStep3 from "~/components/session/AddSessionStep3";
 import PlusIcon from "~/components/svgs/PlusIcon";
 import AddSessionStep4 from "~/components/session/AddSessionStep4";
 import { urlRegex } from "~/utils/regex-helpers";
+import { router } from "expo-router";
 
 interface Props {
   //
@@ -113,7 +114,9 @@ export default function AddSession(props: Props): React.JSX.Element {
         animated: true,
       });
       setCurrentStep(currentStep - 1);
+      return;
     }
+    router.back();
   };
 
   const onScroll = Animated.event(
@@ -189,7 +192,7 @@ export default function AddSession(props: Props): React.JSX.Element {
       <View style={[styles.footer]}>
         <TouchableOpacity style={[styles.cancelButton]} onPress={handlePrev}>
           <CustomText color={COLORS.primary} fontFamily={"bold"} fontSize={16}>
-            Cancel
+            {currentStep === 1 ? "Cancel" : "Prev"}
           </CustomText>
         </TouchableOpacity>
         <TouchableOpacity

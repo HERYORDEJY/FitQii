@@ -13,6 +13,7 @@ import SessionsListItem from "~/components/session/SessionsListItem";
 import CustomText from "~/components/general/CustomText";
 import { addDays, format } from "date-fns";
 import { COLORS } from "~/constants/Colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props extends Partial<SectionListProps<any>> {
   // TODO:: implement correct ListRenderItem type
@@ -22,6 +23,9 @@ interface Props extends Partial<SectionListProps<any>> {
 }
 
 export default function SessionsList(props: Props): React.JSX.Element {
+  const safeAreaInsets = useSafeAreaInsets();
+  const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
+
   const keyExtractor = useCallback((item: any, index: number) => {
     return `${item?.id} - ${index}`;
   }, []);
@@ -82,6 +86,7 @@ export default function SessionsList(props: Props): React.JSX.Element {
       contentContainerStyle={[
         styles.contentContainer,
         props.contentContainerStyle,
+        { paddingBottom: 320 + TAB_BAR_HEIGHT },
       ]}
       renderSectionHeader={renderSectionHeader}
     />

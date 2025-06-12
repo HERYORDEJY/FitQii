@@ -8,15 +8,15 @@ import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
 import TodaySessionList from "~/components/session/TodaySessionList";
 import PlusIcon from "~/components/svgs/PlusIcon";
-import NotificationBellIcon from "~/components/svgs/NotificationBellIcon";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 export default function Home(): React.JSX.Element {
-  const handleAddSession = () => {
-    // TODO:: implement add session action
-  };
+  const safeAreaInsets = useSafeAreaInsets();
+  const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
 
-  const handleNotificationPress = () => {
-    // TODO:: implement notification action
+  const handleAddSession = () => {
+    router.push("/add-session");
   };
 
   return (
@@ -27,16 +27,6 @@ export default function Home(): React.JSX.Element {
           <View style={[styles.navbarLeft]}>
             <FitQiiLogoIcon1 />
             <FitQiiLogoName1 />
-          </View>
-
-          <View style={[styles.navbarRight]}>
-            <TouchableOpacity
-              style={[styles.notificationButton]}
-              onPress={handleNotificationPress}
-            >
-              <NotificationBellIcon />
-              <View style={[styles.notificationIndicator]} />
-            </TouchableOpacity>
           </View>
         </View>
         <SearchInput
@@ -56,7 +46,10 @@ export default function Home(): React.JSX.Element {
         />
       </View>
 
-      <TouchableOpacity style={[styles.plusIcon]} onPress={handleAddSession}>
+      <TouchableOpacity
+        style={[styles.addButton, { bottom: TAB_BAR_HEIGHT + 20 }]}
+        onPress={handleAddSession}
+      >
         <PlusIcon />
       </TouchableOpacity>
     </CustomScreenContainer>
@@ -99,7 +92,7 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: COLORS.background.card,
   },
-  plusIcon: {
+  addButton: {
     position: "absolute",
     bottom: 40,
     right: 20,

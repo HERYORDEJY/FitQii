@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 import TodaySessionListItem from "~/components/session/TodaySessionListItem";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props extends Partial<FlatListProps<any>> {
   // TODO:: implement correct ListRenderItem type
@@ -16,6 +17,9 @@ interface Props extends Partial<FlatListProps<any>> {
 }
 
 export default function TodaySessionList(props: Props): React.JSX.Element {
+  const safeAreaInsets = useSafeAreaInsets();
+  const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
+
   const keyExtractor = useCallback((item: any, index: number) => {
     return `${item?.id} - ${index}`;
   }, []);
@@ -38,6 +42,7 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
       contentContainerStyle={[
         styles.contentContainer,
         props.contentContainerStyle,
+        { paddingBottom: 220 + TAB_BAR_HEIGHT },
       ]}
     />
   );

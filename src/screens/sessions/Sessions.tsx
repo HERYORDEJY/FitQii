@@ -8,16 +8,20 @@ import { getWeekDates } from "~/utils/date-helpers";
 import { format, isToday } from "date-fns";
 import PlusIcon from "~/components/svgs/PlusIcon";
 import SessionsList from "~/components/session/SessionsList";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 export default function Sessions(): React.JSX.Element {
   const weekDates = getWeekDates();
+  const safeAreaInsets = useSafeAreaInsets();
+  const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
 
   const handleSelectDateRowItem = () => {
     // TODO:: implement select date row item action
   };
 
   const handleAddSession = () => {
-    // TODO:: implement add session action
+    router.push("/add-session");
   };
 
   const handleSearchSession = () => {
@@ -82,7 +86,10 @@ export default function Sessions(): React.JSX.Element {
         <SessionsList contentContainerStyle={{ paddingHorizontal: 20 }} />
       </View>
 
-      <TouchableOpacity style={[styles.plusIcon]} onPress={handleAddSession}>
+      <TouchableOpacity
+        style={[styles.addButton, { bottom: TAB_BAR_HEIGHT + 20 }]}
+        onPress={handleAddSession}
+      >
         <PlusIcon />
       </TouchableOpacity>
     </CustomScreenContainer>
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: COLORS.background.card,
   },
-  plusIcon: {
+  addButton: {
     position: "absolute",
     bottom: 40,
     right: 20,
