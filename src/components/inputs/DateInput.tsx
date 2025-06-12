@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomTextInput from "~/components/inputs/CustomTextInput";
 import { CustomTextInputProps } from "~/components/inputs/types";
@@ -17,16 +17,16 @@ type Props = CustomTextInputProps & {
   disabled?: boolean;
   onSelectDate: (date: Date) => void;
   selectedDate: Date;
+  maximumDate?: Date;
+  minimumDate?: Date;
 };
 
 export default function DateInput(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const sheetRef = useRef<BottomSheetRef>(null);
   const isDisabled = props.disabled;
-  const keyExtractor = useCallback((item: any, index: number) => {
-    return `${item?.id} - ${index}`;
-  }, []);
+
   const showAndroidPicker = useBooleanValue(false);
 
   const handleConfirmPick = () => {
@@ -39,6 +39,7 @@ export default function DateInput(props: Props): React.JSX.Element {
   };
 
   const handleOpenSelect = () => {
+    setSelectedDate(props.selectedDate ?? new Date());
     if (Platform.OS === "ios") {
       sheetRef.current?.open({
         title: "Hello World",
@@ -57,6 +58,7 @@ export default function DateInput(props: Props): React.JSX.Element {
     }
 
     if (Platform.OS === "android") {
+      setSelectedDate(date);
       props.onSelectDate?.(date);
       showAndroidPicker.setFalseValue();
       return;
@@ -71,8 +73,9 @@ export default function DateInput(props: Props): React.JSX.Element {
   const renderPicker = () => {
     return (
       <DateTimePicker
-        minimumDate={new Date()}
-        value={props.selectedDate ?? new Date()}
+        minimumDate={props.minimumDate ?? new Date()}
+        maximumDate={props.maximumDate}
+        value={props.selectedDate ?? selectedDate!}
         mode={"date"}
         display={"spinner"}
         accentColor={COLORS.primary}

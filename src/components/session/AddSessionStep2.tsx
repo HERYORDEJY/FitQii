@@ -24,6 +24,11 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={[styles.contentContainer]}>
+        <View style={[styles.sessionTitleWrapper]}>
+          <CustomText fontSize={22} fontFamily={"medium"}>
+            {props.formData?.name ?? "Session"}
+          </CustomText>
+        </View>
         <View style={[styles.fieldGroup]}>
           <CustomText>When should it take place?</CustomText>
           <View style={[styles.dateFieldsRow]}>
@@ -62,6 +67,7 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
               onSelectDate={(date) => handleEnterData("end_time", date)}
               selectedDate={props.formData?.end_time}
               containerStyle={{ flex: 1 }}
+              maximumDate={props.formData?.start_time}
             />
           </View>
         </View>
@@ -116,7 +122,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: screenDimensions.width,
-    paddingVertical: 40,
+    paddingVertical: 20,
     paddingHorizontal: 20,
     rowGap: 40,
   },
@@ -127,6 +133,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     columnGap: 20,
+  },
+  sessionTitleWrapper: {
+    borderLeftWidth: 6,
+    borderLeftColor: COLORS.primary,
+    backgroundColor: COLORS.primary + 30,
+    borderRadius: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  sessionTitleText: {
+    //
   },
 });
 

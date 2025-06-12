@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     width: screenDimensions.width,
-    paddingVertical: 40,
+    paddingVertical: 20,
     paddingHorizontal: 20,
     rowGap: 40,
   },

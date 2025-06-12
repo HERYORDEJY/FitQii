@@ -12,6 +12,8 @@ import { COLORS } from "~/constants/Colors";
 import AddSessionStep1 from "~/components/session/AddSessionStep1";
 import { screenDimensions } from "~/utils/size-helpers";
 import AddSessionStep2 from "~/components/session/AddSessionStep2";
+import AddSessionStep3 from "~/components/session/AddSessionStep3";
+import PlusIcon from "~/components/svgs/PlusIcon";
 
 interface Props {
   //
@@ -25,6 +27,10 @@ const FormSteps = [
   {
     step: 2,
     component: (props: any) => <AddSessionStep2 step={2} {...props} />,
+  },
+  {
+    step: 3,
+    component: (props: any) => <AddSessionStep3 step={3} {...props} />,
   },
 ];
 
@@ -113,9 +119,12 @@ export default function AddSession(props: Props): React.JSX.Element {
           />
         </View>
 
-        <CustomText fontSize={22} fontFamily={"medium"}>
-          Add Session
-        </CustomText>
+        <View style={[styles.headerTitleBar]}>
+          <PlusIcon />
+          <CustomText fontSize={22} fontFamily={"medium"}>
+            Add Session
+          </CustomText>
+        </View>
       </View>
       <Animated.ScrollView
         ref={scrollViewRef}
@@ -136,7 +145,7 @@ export default function AddSession(props: Props): React.JSX.Element {
             <Fragment key={`${index}`}>
               {form.component({
                 onEnterData: handleSetFormData,
-                formData: stepData,
+                formData: { ...stepData, name: formData?.["step1"]?.name },
               })}
             </Fragment>
           );
@@ -177,6 +186,11 @@ const styles = StyleSheet.create({
   header: {
     rowGap: 16,
     paddingHorizontal: 20,
+  },
+  headerTitleBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 10,
   },
   progresBar: {
     height: 4,

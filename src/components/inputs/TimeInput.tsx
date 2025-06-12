@@ -17,11 +17,13 @@ type Props = CustomTextInputProps & {
   disabled?: boolean;
   onSelectDate: (date: Date) => void;
   selectedDate: Date;
+  minimumDate?: Date;
+  maximumDate?: Date;
 };
 
 export default function TimeInput(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const sheetRef = useRef<BottomSheetRef>(null);
   const isDisabled = props.disabled;
   const keyExtractor = useCallback((item: any, index: number) => {
@@ -58,6 +60,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
     }
 
     if (Platform.OS === "android") {
+      setSelectedDate(date);
       props.onSelectDate?.(date);
       showAndroidPicker.setFalseValue();
       return;
@@ -72,8 +75,9 @@ export default function TimeInput(props: Props): React.JSX.Element {
   const renderPicker = useCallback(() => {
     return (
       <DateTimePicker
-        minimumDate={new Date()}
-        value={selectedDate ?? props.selectedDate ?? new Date()}
+        minimumDate={props.minimumDate ?? new Date()}
+        maximumDate={props.maximumDate}
+        value={props.selectedDate ?? selectedDate!}
         mode={"time"}
         display={"spinner"}
         accentColor={COLORS.primary}
