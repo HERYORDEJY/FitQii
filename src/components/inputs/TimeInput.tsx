@@ -41,7 +41,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
   };
 
   const handleOpenSelect = () => {
-    setSelectedDate(props.selectedDate ?? new Date());
+    setSelectedDate(props.selectedDate ?? props.minimumDate ?? new Date());
     if (Platform.OS === "ios") {
       sheetRef.current?.open({
         title: "Hello World",

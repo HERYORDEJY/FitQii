@@ -79,8 +79,8 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
         </View>
 
         <View style={[styles.fieldGroup]}>
-          <CustomText>Timezone</CustomText>
           <SelectInput
+            label={"Timezone"}
             options={Timezones}
             onSelectOption={(option) =>
               handleEnterData("timezone", option.value)
@@ -92,8 +92,8 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
         </View>
 
         <View style={[styles.fieldGroup]}>
-          <CustomText>Reminder</CustomText>
           <SelectInput
+            label={"Reminder"}
             options={ReminderOptions}
             onSelectOption={(option) =>
               handleEnterData("reminder", option.value)
@@ -105,8 +105,8 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
         </View>
 
         <View style={[styles.fieldGroup]}>
-          <CustomText>Repetition</CustomText>
           <SelectInput
+            label={"Repetition"}
             options={RepetitionOptions}
             onSelectOption={(option) =>
               handleEnterData("repetition", option.value)
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     rowGap: 40,
   },
   fieldGroup: {
-    rowGap: 12,
+    rowGap: 10,
   },
   dateFieldsRow: {
     flexDirection: "row",

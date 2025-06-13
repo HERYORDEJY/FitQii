@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import CustomTextInput from "~/components/inputs/CustomTextInput";
 import { COLORS } from "~/constants/Colors";
 import { screenDimensions } from "~/utils/size-helpers";
@@ -22,13 +22,14 @@ export default function AddSessionStep1(props: Props): React.JSX.Element {
         <CustomTextInput
           placeholder={"Session Name"}
           value={props.formData.name}
-          textInputStyle={{ fontSize: 22, fontFamily: "bold" }}
-          contentContainerStyle={{
-            backgroundColor: "transparent",
-            borderLeftWidth: 6,
-            borderLeftColor: COLORS.primary,
-            borderRadius: 0,
+          textInputStyle={{
+            fontSize: 22,
+            fontFamily: "bold",
           }}
+          contentContainerStyle={[
+            styles.nameInputContainer,
+            Platform.OS === "android" && { height: 50 },
+          ]}
           cursorColor={COLORS.primary}
           autoFocus={true}
           onChangeText={(text) => handleEnterData("name", text)}
@@ -57,6 +58,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     rowGap: 40,
+  },
+  nameInputContainer: {
+    backgroundColor: "transparent",
+    borderLeftWidth: 6,
+    borderLeftColor: COLORS.primary,
+    borderRadius: 0,
   },
 });
 

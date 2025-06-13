@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomScreenContainer from "~/components/general/CustomScreenContainer";
 import FitQiiLogoIcon1 from "~/components/svgs/FitQiiLogoIcon1";
@@ -9,50 +9,19 @@ import CustomText from "~/components/general/CustomText";
 import TodaySessionList from "~/components/session/TodaySessionList";
 import PlusIcon from "~/components/svgs/PlusIcon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { sessionsDb } from "~/db";
-import migrations from "~/db/drizzle/migrations";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { sessionsSchema } from "~/db/schema";
-import { addDays, addMinutes } from "date-fns";
-import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import { router } from "expo-router";
 
 export default function Home(): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const { success, error } = useMigrations(sessionsDb, migrations);
-  const sessionDbLiveQuery = useLiveQuery(
-    sessionsDb.select().from(sessionsSchema),
-  );
+  const handleAddSession = () => {
+    router.push("/add-session");
+  };
 
-  console.log(
-    "\n\n { success, error } :>> \t\t",
-    { data: sessionDbLiveQuery.data },
-    "\n\n---",
-  );
-
-  const handleAddSession = async () => {
-    try {
-      // router.push("/add-session");
-      await sessionsDb.insert(sessionsSchema).values([
-        {
-          name: "Another Village meeting",
-          category: "meeting",
-          start_date: new Date().toString(),
-          end_date: addDays(new Date(), 1).toString(),
-          start_time: addMinutes(new Date(), 20).toString(),
-          end_time: addMinutes(addDays(new Date(), 1), 50).toString(),
-          mode: "online",
-          link: "www.google.com",
-          description: "No descriptions for now",
-          timezone: "-07:00",
-          reminder: 600,
-          repetition: 2592000,
-        },
-      ]);
-    } catch (error: any) {
-      console.error("\n\nsessionsDb.insert error :>> \t\t", error, "\n\n---");
-    }
+  const handleSearchSession = (searchText: string) => {
+    setSearchQuery(searchText);
   };
 
   return (
@@ -68,11 +37,14 @@ export default function Home(): React.JSX.Element {
         <SearchInput
           placeholder={" Search by Session..."}
           containerStyle={{ marginHorizontal: 20 }}
+          onChangeText={setSearchQuery}
         />
         <View style={[styles.headerLine]} />
       </View>
       <View style={styles.container}>
         <TodaySessionList
+          onSearchSession={handleSearchSession}
+          searchQuery={searchQuery}
           contentContainerStyle={{ paddingHorizontal: 20 }}
           ListHeaderComponent={
             <CustomText fontFamily={"bold"} fontSize={22}>

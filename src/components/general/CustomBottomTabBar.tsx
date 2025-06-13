@@ -19,7 +19,8 @@ export default function CustomBottomTabBar({
 }: Props): React.JSX.Element {
   const opacity = useRef(new Animated.Value(1)).current;
   const safeAreaInsets = useSafeAreaInsets();
-  const BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
+  const BAR_HEIGHT =
+    69 + (Platform.OS === "ios" ? safeAreaInsets.bottom : 35) / 2;
   const scrollY = useSharedValue(0);
 
   const getTabIcon = (label: string, isFocused: boolean) => {
@@ -131,5 +132,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     rowGap: 3,
     flex: 1,
+    height: "100%",
   },
 });

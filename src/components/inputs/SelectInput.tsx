@@ -43,13 +43,16 @@ export default function SelectInput(props: Props): React.JSX.Element {
   };
 
   const handleSelectOption = (option: SelectOptionType) => {
+    setSelectedOption(option);
     props.onSelectOption?.(option);
     sheetRef.current?.close();
   };
 
   const renderItem: ListRenderItem<SelectOptionType> = useCallback(
     ({ item, index }) => {
-      const isSelected = props.selectedOptionValue === item.value;
+      const isSelected =
+        selectedOption?.value === item.value &&
+        selectedOption?.label === item.label;
       return (
         <TouchableOpacity
           key={`${item.id ?? item.value}-${index}`}
@@ -75,7 +78,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
               ]}
             />
           </View>
-          <CustomText>{item.label}</CustomText>
+          <CustomText numberOfLines={1}>{item.label}</CustomText>
         </TouchableOpacity>
       );
     },
@@ -88,7 +91,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
         return option.value === props.selectedOptionValue;
       });
     });
-  }, [props.selectedOptionValue]);
+  }, []);
 
   return (
     <>
@@ -107,6 +110,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
           pointerEvents={"none"}
           value={selectedOption?.label ?? selectedOption?.name}
           label={undefined}
+          editable={false}
         />
       </TouchableOpacity>
 
@@ -162,11 +166,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFFFFF60",
     padding: 2.5,
+    overflow: "hidden",
   },
   itemRadioCheckActive: {
     height: "100%",
     width: "100%",
-    borderRadius: 16,
+    borderRadius: 100,
     backgroundColor: "transparent",
+    overflow: "hidden",
   },
 });

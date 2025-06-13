@@ -11,11 +11,14 @@ import {
   ViewStyle,
 } from "react-native";
 import CustomText from "~/components/general/CustomText";
-import { addDays, format } from "date-fns";
+import { addDays, format, isToday } from "date-fns";
 import { COLORS } from "~/constants/Colors";
 import TodaySessionListItem from "~/components/session/TodaySessionListItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SessionItemDataType } from "~/components/session/types";
+import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import { sessionsDb } from "~/db";
+import { sessionsSchema } from "~/db/schema";
 
 interface Props extends Partial<SectionListProps<SessionItemDataType>> {
   containerStyle?: StyleProp<ViewStyle>;
@@ -26,6 +29,14 @@ interface Props extends Partial<SectionListProps<SessionItemDataType>> {
 export default function HistoryList(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
+  const sessionDbLiveQuery = useLiveQuery(
+      sessionsDb.select().from(sessionsSchema),
+    ),
+    data = sessionDbLiveQuery.data.filter((session) =>
+      isToday(session.start_date),
+    );
+
+  console.log("\n\n data :>> \t\t", sessionDbLiveQuery.data, "\n\n---");
 
   const keyExtractor = useCallback((item: any, index: number) => {
     return `${item?.id} - ${index}`;

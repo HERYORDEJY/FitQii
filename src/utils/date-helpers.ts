@@ -1,4 +1,4 @@
-export function getWeekDates(referenceDate: Date = new Date()): Date[] {
+export function getWeekDates(referenceDate: Date = new Date()): Array<Date> {
   // Create a copy of the reference date to avoid mutation
   const date = new Date(referenceDate);
 
@@ -25,4 +25,35 @@ export function getWeekDates(referenceDate: Date = new Date()): Date[] {
   }
 
   return weekDates;
+}
+
+function isValidDate(date: any): date is Date {
+  return date instanceof Date && !isNaN(date.getTime());
+}
+
+export function combineDateAndTimeSafe(
+  datePart: Date,
+  timePart: Date,
+): Date | null {
+  if (!isValidDate(datePart) || !isValidDate(timePart)) {
+    return null;
+  }
+  return new Date(
+    datePart.getFullYear(),
+    datePart.getMonth(),
+    datePart.getDate(),
+    timePart.getHours(),
+    timePart.getMinutes(),
+    timePart.getSeconds(),
+    timePart.getMilliseconds(),
+  );
+}
+
+function isDateToday(date: Date): boolean {
+  const today = new Date();
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
 }

@@ -11,6 +11,7 @@ import Reanimated, {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/src/components/ReanimatedSwipeable";
 import { SessionItemDataType } from "~/components/session/types";
+import { format, isValid } from "date-fns";
 
 interface Props {
   item: SessionItemDataType;
@@ -103,17 +104,20 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
         >
           <View style={styles.contentContainer}>
             <View style={styles.body}>
-              <CustomText fontFamily={"medium"}>System Setup</CustomText>
-              <View style={styles.bodyBottom}>
-                <ClockIcon />
-                <CustomText fontFamily={"regular"} fontSize={12}>
-                  10:00 AM
-                </CustomText>
-                <ArrowRightIcon />
-                <CustomText fontFamily={"regular"} fontSize={12}>
-                  11:00 AM
-                </CustomText>
-              </View>
+              <CustomText fontFamily={"medium"}>{props.item?.name}</CustomText>
+              {isValid(new Date(props.item?.start_time)) &&
+              isValid(new Date(props.item?.end_time)) ? (
+                <View style={styles.bodyBottom}>
+                  <ClockIcon />
+                  <CustomText fontFamily={"regular"} fontSize={12}>
+                    {format(props.item?.start_time, "h:mm a")}
+                  </CustomText>
+                  <ArrowRightIcon />
+                  <CustomText fontFamily={"regular"} fontSize={12}>
+                    {format(props.item?.end_time, "h:mm a")}
+                  </CustomText>
+                </View>
+              ) : null}
             </View>
           </View>
         </ReanimatedSwipeable>

@@ -157,34 +157,36 @@ export default function AddSessionStep4({
             <CustomText fontSize={16}>{formData.step3.description}</CustomText>
           </View>
 
-          <View style={[styles.fieldGroup, { rowGap: 5 }]}>
-            <TouchableOpacity style={[styles.stepItemRow]}>
-              <AttachmentIcon />
-              <CustomText>Attachments</CustomText>
-            </TouchableOpacity>
+          {Boolean(formData?.step3.attachments?.length) ? (
+            <View style={[styles.fieldGroup, { rowGap: 5 }]}>
+              <TouchableOpacity style={[styles.stepItemRow]}>
+                <AttachmentIcon />
+                <CustomText>Attachments</CustomText>
+              </TouchableOpacity>
 
-            <View style={[styles.attachments]}>
-              {formData?.step3.attachments?.map(
-                (
-                  attachment: DocumentPicker.DocumentPickerAsset,
-                  index: number,
-                ) => {
-                  return (
-                    <View style={[styles.attachmentsItem]} key={`${index}`}>
-                      <CustomText
-                        numberOfLines={1}
-                        ellipsizeMode={"middle"}
-                        style={{ flex: 1 }}
-                        color={"#FFFFFF40"}
-                      >
-                        {attachment.name}
-                      </CustomText>
-                    </View>
-                  );
-                },
-              )}
+              <View style={[styles.attachments]}>
+                {formData?.step3.attachments?.map(
+                  (
+                    attachment: DocumentPicker.DocumentPickerAsset,
+                    index: number,
+                  ) => {
+                    return (
+                      <View style={[styles.attachmentsItem]} key={`${index}`}>
+                        <CustomText
+                          numberOfLines={1}
+                          ellipsizeMode={"middle"}
+                          style={{ flex: 1 }}
+                          color={"#FFFFFF40"}
+                        >
+                          {attachment.name}
+                        </CustomText>
+                      </View>
+                    );
+                  },
+                )}
+              </View>
             </View>
-          </View>
+          ) : null}
         </View>
       </ScrollView>
     </View>

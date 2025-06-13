@@ -54,6 +54,7 @@ const BottomSheet = forwardRef<BottomSheetRef, Props>(
         animateOut();
       },
       data: openParams,
+      isVisible: visible,
     }));
 
     useEffect(() => {

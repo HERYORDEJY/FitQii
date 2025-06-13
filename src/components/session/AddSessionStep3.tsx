@@ -127,10 +127,10 @@ export default function AddSessionStep3(props: Props): React.JSX.Element {
             label={"Link"}
             placeholder={"Add session link here"}
             cursorColor={COLORS.primary}
-            autoFocus={true}
             onChangeText={(text) => handleEnterData("link", text)}
             renderRightElement={<LinkIcon />}
             value={props.formData?.link}
+            autoFocus={true}
             autoCorrect={false}
             autoComplete={"url"}
             autoCapitalize={"none"}
@@ -145,13 +145,15 @@ export default function AddSessionStep3(props: Props): React.JSX.Element {
               onChangeText={(text) => handleEnterData("location", text)}
               renderRightElement={<LocationIcon />}
               value={props.formData?.location}
+              autoFocus={true}
+              autoComplete={"address-line1"}
             />
           </View>
         ) : null}
 
         <View style={[styles.fieldGroup]}>
-          <CustomText>Description (optional)</CustomText>
           <CustomTextInput
+            label={"Description (optional)"}
             placeholder={"You can add note or description about session"}
             onChangeText={(text) => handleEnterData("description", text)}
             contentContainerStyle={{ height: 100 }}
@@ -219,7 +221,7 @@ const styles = StyleSheet.create({
     rowGap: 40,
   },
   fieldGroup: {
-    rowGap: 12,
+    rowGap: 10,
   },
   dateFieldsRow: {
     flexDirection: "row",
@@ -246,12 +248,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFFFFF60",
     padding: 2.5,
+    overflow: "hidden",
   },
   itemRadioCheckActive: {
     height: "100%",
     width: "100%",
-    borderRadius: 16,
+    borderRadius: 100,
     backgroundColor: "transparent",
+    overflow: "hidden",
   },
   modeValuesWrapper: {
     flexDirection: "row",

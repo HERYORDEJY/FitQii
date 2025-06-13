@@ -17,6 +17,9 @@ import PlusIcon from "~/components/svgs/PlusIcon";
 import AddSessionStep4 from "~/components/session/AddSessionStep4";
 import { urlRegex } from "~/utils/regex-helpers";
 import { router } from "expo-router";
+import { sessionsDb } from "~/db";
+import { sessionsSchema } from "~/db/schema";
+import { useToastNotification } from "~/hooks/useToastNotification";
 
 interface Props {
   //
@@ -51,6 +54,7 @@ export default function AddSession(props: Props): React.JSX.Element {
     step3: {},
     step4: {},
   });
+  const toastNotification = useToastNotification();
 
   const canGoNext = useMemo(() => {
     if (currentStep === 1) {
@@ -63,8 +67,8 @@ export default function AddSession(props: Props): React.JSX.Element {
         Boolean(formData.step2.end_date) &&
         Boolean(formData.step2.end_time) &&
         Boolean(formData.step2.timezone) &&
-        Boolean(formData.step2.reminder) &&
-        Boolean(formData.step2.repetition)
+        !isNaN(formData.step2.reminder) &&
+        !isNaN(formData.step2.repetition)
       );
     }
     if (currentStep === 3) {
@@ -76,11 +80,7 @@ export default function AddSession(props: Props): React.JSX.Element {
       );
     }
 
-    if (currentStep === 4) {
-      return true;
-    }
-
-    return false;
+    return currentStep === 4;
   }, [currentStep, formData]);
 
   const handleSetFormData = (step: number, data: any) => {
@@ -94,7 +94,34 @@ export default function AddSession(props: Props): React.JSX.Element {
     });
   };
 
-  const handleNext = () => {
+  const handleSaveSession = async () => {
+    try {
+      const dataToInsert = {
+        ...formData.step1,
+        ...formData.step2,
+        ...formData.step3,
+        start_date: new Date(formData.step2.start_date).toString(),
+        end_date: new Date(formData.step2.end_date).toString(),
+        start_time: new Date(formData.step2.start_time).toString(),
+        end_time: new Date(formData.step2.end_time).toString(),
+        /*
+        attachments: formData.step3.attachments
+          ? formData.step3.attachments.map((attachment: any) => ({
+              ...attachment,
+              uri: attachment.uri.replace("file://", ""),
+            }))
+          : null,
+*/
+      };
+      await sessionsDb.insert(sessionsSchema).values([dataToInsert]);
+      toastNotification.success("Session saved successfully.");
+      router.back();
+    } catch (error: any) {
+      console.error("\n\nsessionsDb.insert error :>> \t\t", error, "\n\n---");
+    }
+  };
+
+  const handleNext = async () => {
     if (currentStep < FormSteps.length) {
       scrollViewRef.current?.scrollTo({
         x: screenDimensions.width * currentStep,
@@ -102,7 +129,7 @@ export default function AddSession(props: Props): React.JSX.Element {
       });
       setCurrentStep(currentStep + 1);
     } else {
-      // Save logic
+      await handleSaveSession();
       console.log("Submit form");
     }
   };
