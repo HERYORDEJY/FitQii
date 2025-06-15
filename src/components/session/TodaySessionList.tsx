@@ -3,6 +3,7 @@ import {
   FlatList,
   FlatListProps,
   ListRenderItem,
+  RefreshControl,
   StyleProp,
   StyleSheet,
   View,
@@ -12,16 +13,15 @@ import TodaySessionListItem from "~/components/session/TodaySessionListItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SessionItemDataType } from "~/components/session/types";
 import { sessionsDb } from "~/db";
-import { sessionsSchema } from "~/db/schema";
 import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "~/db/drizzle/migrations";
-import { useFocusEffect } from "expo-router";
-import { useBooleanValue } from "~/hooks/useBooleanValue";
+import { useTodaySessions } from "~/services/db/actions";
+import CustomActivityIndicator from "~/components/general/CustomActivityIndicator";
+import { errorLogOnDev } from "~/utils/log-helpers";
 
-interface Props extends Partial<FlatListProps<any>> {
-  // TODO:: implement correct ListRenderItem type
+interface Props extends Partial<FlatListProps<SessionItemDataType>> {
   containerStyle?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
   onSearchSession?: (searchText: string) => void;
@@ -32,60 +32,24 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
   const sessionsDbMigrations = useMigrations(sessionsDb, migrations);
-  const isFetchingSessionsData = useBooleanValue(true);
-  const [todaySessionsData, setTodaySessionsData] = useState<
-    Array<SessionItemDataType>
-  >([]);
   const [filteredSessionsData, setFilteredSessionsData] = useState<
     Array<SessionItemDataType>
   >([]);
+
+  const todaySessionsQuery = useTodaySessions();
 
   const keyExtractor = useCallback((item: any, index: number) => {
     return `${item?.id} - ${index}`;
   }, []);
 
-  const handleFetchSessions = async () => {
-    isFetchingSessionsData.setTrueValue();
-    try {
-      const result = await sessionsDb.select().from(sessionsSchema);
-      const now = new Date();
-      const todayStart = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-      );
-      const todayEnd = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        23,
-        59,
-        59,
-        999,
-      );
-      const todaySessions = result.filter((session) => {
-        const sessionStart = new Date(session.start_date);
-        const sessionEnd = new Date(session.end_date);
-
-        return sessionStart <= todayEnd && sessionEnd >= todayStart;
-      });
-
-      return todaySessions as Array<SessionItemDataType>;
-    } catch (error) {
-      console.error("Error fetching sessions:", error);
-    } finally {
-      isFetchingSessionsData.setFalseValue();
-    }
-  };
-
   const handleSearchSession = () => {
     if (!Boolean(props.searchQuery)) {
-      setFilteredSessionsData(todaySessionsData);
+      setFilteredSessionsData(todaySessionsQuery.data);
       return;
     }
 
     setFilteredSessionsData(() => {
-      return todaySessionsData.filter((session) => {
+      return todaySessionsQuery.data.filter((session) => {
         return (
           session.name
             .toLowerCase()
@@ -96,6 +60,14 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
         );
       });
     });
+  };
+
+  const handleRefreshList = async () => {
+    try {
+      await todaySessionsQuery.refetch();
+    } catch (error) {
+      errorLogOnDev("Error refreshing sessions list:", error);
+    }
   };
 
   const renderItem: ListRenderItem<SessionItemDataType> = useCallback(
@@ -122,14 +94,11 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
     );
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      handleFetchSessions().then((data) => {
-        setTodaySessionsData(data!);
-        setFilteredSessionsData(data!);
-      });
-    }, []),
-  );
+  useEffect(() => {
+    if (Boolean(todaySessionsQuery.data?.length)) {
+      setFilteredSessionsData(todaySessionsQuery?.data!);
+    }
+  }, [todaySessionsQuery?.data]);
 
   useEffect(() => {
     handleSearchSession();
@@ -164,29 +133,41 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
     );
   }
 
-  /*
   if (
-    sessionDbLiveQuery.data === null ||
-    sessionDbLiveQuery.data.length === 0
+    !Boolean(todaySessionsQuery?.data?.length) &&
+    todaySessionsQuery?.isLoading
   ) {
-    return <>{renderListEmptyComponent()}</>;
+    return (
+      <>
+        <CustomActivityIndicator />
+      </>
+    );
   }
-*/
 
   return (
-    <FlatList
-      {...props}
-      style={[styles.container, props.containerStyle]}
-      data={filteredSessionsData}
-      renderItem={renderItem}
-      keyExtractor={keyExtractor}
-      contentContainerStyle={[
-        styles.contentContainer,
-        props.contentContainerStyle,
-        { paddingBottom: 220 + TAB_BAR_HEIGHT },
-      ]}
-      ListEmptyComponent={renderListEmptyComponent}
-    />
+    <>
+      <FlatList
+        {...props}
+        style={[styles.container, props.containerStyle]}
+        data={filteredSessionsData}
+        horizontal={false}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        contentContainerStyle={[
+          styles.contentContainer,
+          props.contentContainerStyle,
+          { paddingBottom: 220 + TAB_BAR_HEIGHT },
+        ]}
+        ListEmptyComponent={renderListEmptyComponent}
+        showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            onRefresh={handleRefreshList}
+            refreshing={todaySessionsQuery.isRefetching}
+          />
+        }
+      />
+    </>
   );
 }
 

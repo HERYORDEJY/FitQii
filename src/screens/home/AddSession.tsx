@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -16,14 +16,11 @@ import AddSessionStep3 from "~/components/session/AddSessionStep3";
 import PlusIcon from "~/components/svgs/PlusIcon";
 import AddSessionStep4 from "~/components/session/AddSessionStep4";
 import { urlRegex } from "~/utils/regex-helpers";
-import { router } from "expo-router";
-import { sessionsDb } from "~/db";
-import { sessionsSchema } from "~/db/schema";
+import { router, useLocalSearchParams } from "expo-router";
 import { useToastNotification } from "~/hooks/useToastNotification";
-
-interface Props {
-  //
-}
+import { errorLogOnDev } from "~/utils/log-helpers";
+import { useCreateSession, useUpdateSession } from "~/services/db/actions";
+import ArrowRightIcon from "~/components/svgs/ArrowRightIcon";
 
 const FormSteps = [
   {
@@ -44,7 +41,14 @@ const FormSteps = [
   },
 ];
 
-export default function AddSession(props: Props): React.JSX.Element {
+export default function AddSession(): React.JSX.Element {
+  const localSearchParams = useLocalSearchParams(),
+    isEditMode = localSearchParams.editMode
+      ? Boolean(JSON.parse(localSearchParams?.editMode as string))
+      : false,
+    sessionData = Boolean(localSearchParams?.sessionData)
+      ? JSON.parse(localSearchParams?.sessionData as string)
+      : null;
   const [currentStep, setCurrentStep] = useState(1);
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -54,7 +58,17 @@ export default function AddSession(props: Props): React.JSX.Element {
     step3: {},
     step4: {},
   });
+  const [isLinkValid, setIsLinkValid] = useState(false);
   const toastNotification = useToastNotification();
+
+  const createSession = useCreateSession(),
+    updateSession = useUpdateSession();
+
+  /*
+  const isLinkValid = useMemo(() => {
+    return Boolean(formData.step3.link?.match(urlRegex));
+  }, [formData.step3.link]);
+*/
 
   const canGoNext = useMemo(() => {
     if (currentStep === 1) {
@@ -74,14 +88,12 @@ export default function AddSession(props: Props): React.JSX.Element {
     if (currentStep === 3) {
       return (
         Boolean(formData.step3.mode) &&
-        ((Boolean(formData.step3.link) &&
-          `${formData.step3.link}`.match(urlRegex)) ||
-          Boolean(formData.step3.location))
+        (isLinkValid || Boolean(formData.step3.location))
       );
     }
 
     return currentStep === 4;
-  }, [currentStep, formData]);
+  }, [currentStep, formData, isLinkValid]);
 
   const handleSetFormData = (step: number, data: any) => {
     setFormData((prevState) => {
@@ -96,28 +108,24 @@ export default function AddSession(props: Props): React.JSX.Element {
 
   const handleSaveSession = async () => {
     try {
-      const dataToInsert = {
+      const dataToSave = {
         ...formData.step1,
         ...formData.step2,
         ...formData.step3,
-        start_date: new Date(formData.step2.start_date).toString(),
-        end_date: new Date(formData.step2.end_date).toString(),
-        start_time: new Date(formData.step2.start_time).toString(),
-        end_time: new Date(formData.step2.end_time).toString(),
-        /*
-        attachments: formData.step3.attachments
-          ? formData.step3.attachments.map((attachment: any) => ({
-              ...attachment,
-              uri: attachment.uri.replace("file://", ""),
-            }))
-          : null,
-*/
+        ...formData.step4,
       };
-      await sessionsDb.insert(sessionsSchema).values([dataToInsert]);
+      if (isEditMode) {
+        await updateSession.mutateAsync({
+          id: sessionData?.id ?? 3!,
+          data: dataToSave,
+        });
+      } else {
+        await createSession.mutateAsync(dataToSave);
+      }
       toastNotification.success("Session saved successfully.");
       router.back();
     } catch (error: any) {
-      console.error("\n\nsessionsDb.insert error :>> \t\t", error, "\n\n---");
+      errorLogOnDev("\n\nsessionsDb.insert error :>> \t\t", error, "\n\n---");
     }
   };
 
@@ -130,7 +138,6 @@ export default function AddSession(props: Props): React.JSX.Element {
       setCurrentStep(currentStep + 1);
     } else {
       await handleSaveSession();
-      console.log("Submit form");
     }
   };
 
@@ -159,14 +166,20 @@ export default function AddSession(props: Props): React.JSX.Element {
     // setCurrentStep(stepIndex);
   };
 
-  /*
   useEffect(() => {
-    scrollViewRef.current?.scrollTo({
-      x: screenDimensions.width * currentStep,
-      animated: true,
-    });
+    if (isEditMode && sessionData) {
+      setFormData(sessionData);
+      setCurrentStep(1); // Set to preview step
+    }
   }, []);
-*/
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsLinkValid(urlRegex.test(formData.step3.link?.trim()));
+    }, 300); // debounce 300ms
+
+    return () => clearTimeout(timeout);
+  }, [formData.step3.link]);
 
   return (
     <CustomScreenContainer bottomSafeArea={true}>
@@ -181,9 +194,19 @@ export default function AddSession(props: Props): React.JSX.Element {
         </View>
 
         <View style={[styles.headerTitleBar]}>
-          <PlusIcon />
+          {isEditMode ? (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={[{ transform: [{ rotate: "180deg" }] }]}
+            >
+              <ArrowRightIcon width={24} height={24} />
+            </TouchableOpacity>
+          ) : (
+            <PlusIcon />
+          )}
           <CustomText fontSize={22} fontFamily={"medium"}>
-            Add Session {currentStep === 4 ? "(Preview)" : ""}
+            {isEditMode ? "Edit" : "Add"} Session{" "}
+            {currentStep === 4 ? "(Preview)" : ""}
           </CustomText>
         </View>
       </View>
@@ -289,58 +312,3 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-
-const _data = {
-  formData: {
-    step1: { name: "H", category: "gym" },
-    step2: {
-      start_time: "2025-06-12T10:01:30.000Z",
-      end_time: "2025-06-12T10:02:30.000Z",
-      start_date: "2025-07-12T10:02:03.000Z",
-      end_date: "2025-07-12T10:02:03.000Z",
-      timezone: "-07:00",
-      reminder: 600,
-      repetition: 2592000,
-    },
-    step3: {
-      mode: "offline",
-      location: "Ilorin Nigeria",
-      description: "No decription",
-      attachments: [
-        {
-          size: 2543770,
-          mimeType: "application/pdf",
-          name: "Google claims new Gemini AI 'thinks more carefully' - BBC News.pdf",
-          uri: "file:///Users/heryordejy/Library/Developer/CoreSimulator/Devices/D6FE8D2D-97C7-4601-B60A-5ED501805700/data/Containers/Data/Application/FBD3FA7D-A9B9-43D0-829D-16EA6F870253/Library/Caches/ExponentExperienceData/@anonymous/FitQii-7e4ed325-d993-42df-aafd-9502b9dd71f7/DocumentPicker/2CD670D2-46F3-412B-8EB0-FA1AABAC25C8.pdf",
-        },
-      ],
-    },
-    step4: {},
-  },
-  currentStep: 4,
-};
-
-const yy = {
-  name: "H",
-  category: "gym",
-  start_time: "2025-06-12T10:01:30.000Z",
-  end_time: "2025-06-12T10:02:30.000Z",
-  start_date: "2025-07-12T10:02:03.000Z",
-  end_date: "2025-07-12T10:02:03.000Z",
-  timezone: "-07:00",
-  reminder: 600,
-  repetition: 2592000,
-
-  mode: "offline",
-  location: "Ilorin Nigeria",
-  link: null,
-  description: "No decription",
-  attachments: [
-    {
-      size: 2543770,
-      mimeType: "application/pdf",
-      name: "Google claims new Gemini AI 'thinks more carefully' - BBC News.pdf",
-      uri: "file:///Users/heryordejy/Library/Developer/CoreSimulator/Devices/D6FE8D2D-97C7-4601-B60A-5ED501805700/data/Containers/Data/Application/FBD3FA7D-A9B9-43D0-829D-16EA6F870253/Library/Caches/ExponentExperienceData/@anonymous/FitQii-7e4ed325-d993-42df-aafd-9502b9dd71f7/DocumentPicker/2CD670D2-46F3-412B-8EB0-FA1AABAC25C8.pdf",
-    },
-  ],
-};

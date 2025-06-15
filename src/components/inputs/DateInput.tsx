@@ -42,7 +42,6 @@ export default function DateInput(props: Props): React.JSX.Element {
     setSelectedDate(props.selectedDate ?? props.minimumDate ?? new Date());
     if (Platform.OS === "ios") {
       sheetRef.current?.open({
-        title: "Hello World",
         items: [...Array(10).keys()],
       });
       return;

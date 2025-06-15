@@ -5,7 +5,6 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -15,6 +14,7 @@ import {
   ToastNotificationIndicationType,
 } from "~/contextAPI/toast-notification/types";
 import { useToastNotification } from "~/hooks/useToastNotification";
+import CustomText from "~/components/general/CustomText";
 
 interface Props {
   toast: ToastNotificationDataType;
@@ -126,26 +126,27 @@ function ToastContent({
           onPress={handleHide}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text style={styles.closeText}>×</Text>
+          <CustomText style={styles.closeText}>×</CustomText>
         </TouchableOpacity>
 
         <View style={styles.content}>
           {(toast.icon || !toast.title) && (
             <View style={styles.iconContainer}>
-              <Text
+              <CustomText
                 style={[
                   styles.icon,
                   styles[`${toast.type}Icon` as keyof typeof styles],
                 ]}
               >
                 {toast.icon || getDefaultIcon(toast.type)}
-              </Text>
+              </CustomText>
             </View>
           )}
 
           <View style={styles.textContainer}>
             {toast.title && (
-              <Text
+              <CustomText
+                fontFamily={"medium"}
                 style={[
                   styles.title,
                   styles[`${toast.type}Title` as keyof typeof styles],
@@ -153,10 +154,10 @@ function ToastContent({
                 numberOfLines={2}
               >
                 {toast.title}
-              </Text>
+              </CustomText>
             )}
             {toast.message && (
-              <Text
+              <CustomText
                 style={[
                   styles.message,
                   styles[`${toast.type}Message` as keyof typeof styles],
@@ -164,7 +165,7 @@ function ToastContent({
                 numberOfLines={3}
               >
                 {toast.message}
-              </Text>
+              </CustomText>
             )}
           </View>
         </View>
@@ -271,11 +272,10 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+    rowGap: 5,
   },
   title: {
     fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 4,
   },
   message: {
     fontSize: 14,

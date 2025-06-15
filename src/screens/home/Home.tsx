@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomScreenContainer from "~/components/general/CustomScreenContainer";
 import FitQiiLogoIcon1 from "~/components/svgs/FitQiiLogoIcon1";
@@ -10,13 +10,27 @@ import TodaySessionList from "~/components/session/TodaySessionList";
 import PlusIcon from "~/components/svgs/PlusIcon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { sessionsDb } from "~/db";
+import { sessionsSchema } from "~/db/schema";
+import { gt } from "drizzle-orm";
+import { errorLogOnDev, logOnDev } from "~/utils/log-helpers";
 
 export default function Home(): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleAddSession = () => {
+  // TODO:: delete all sessions function
+  const deleteAllSessions = async () => {
+    try {
+      await sessionsDb.delete(sessionsSchema).where(gt(sessionsSchema.id, 0));
+      logOnDev("\n\n All sessions deleted successfully \n\n");
+    } catch (error) {
+      errorLogOnDev("Error deleting all sessions:", error);
+    }
+  };
+
+  const handleAddSession = async () => {
     router.push("/add-session");
   };
 
@@ -24,43 +38,51 @@ export default function Home(): React.JSX.Element {
     setSearchQuery(searchText);
   };
 
-  return (
-    <CustomScreenContainer>
-      {/*  Header */}
-      <View style={[styles.header]}>
-        <View style={[styles.navbar]}>
-          <View style={[styles.navbarLeft]}>
-            <FitQiiLogoIcon1 />
-            <FitQiiLogoName1 />
-          </View>
-        </View>
-        <SearchInput
-          placeholder={" Search by Session..."}
-          containerStyle={{ marginHorizontal: 20 }}
-          onChangeText={setSearchQuery}
-        />
-        <View style={[styles.headerLine]} />
-      </View>
-      <View style={styles.container}>
-        <TodaySessionList
-          onSearchSession={handleSearchSession}
-          searchQuery={searchQuery}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          ListHeaderComponent={
-            <CustomText fontFamily={"bold"} fontSize={22}>
-              Your today’s Session
-            </CustomText>
-          }
-        />
-      </View>
+  // TODO:: remove this useEffect when you want to delete all sessions
+  useEffect(() => {
+    // deleteAllSessions();
+  }, []);
 
-      <TouchableOpacity
-        style={[styles.addButton, { bottom: TAB_BAR_HEIGHT + 20 }]}
-        onPress={handleAddSession}
-      >
-        <PlusIcon />
-      </TouchableOpacity>
-    </CustomScreenContainer>
+  return (
+    <>
+      <CustomScreenContainer>
+        {/*  Header */}
+        <View style={[styles.header]}>
+          <View style={[styles.navbar]}>
+            <View style={[styles.navbarLeft]}>
+              <FitQiiLogoIcon1 />
+              <FitQiiLogoName1 />
+            </View>
+          </View>
+          <SearchInput
+            placeholder={" Search by Session..."}
+            containerStyle={{ marginHorizontal: 20 }}
+            onChangeText={setSearchQuery}
+          />
+          <View style={[styles.headerLine]} />
+        </View>
+        <View style={styles.container}>
+          <TodaySessionList
+            onSearchSession={handleSearchSession}
+            searchQuery={searchQuery}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            ListHeaderComponent={
+              <CustomText fontFamily={"bold"} fontSize={22}>
+                Your today’s sessions
+              </CustomText>
+            }
+          />
+        </View>
+
+        <TouchableOpacity
+          style={[styles.addButton, { bottom: TAB_BAR_HEIGHT + 20 }]}
+          // onPress={deleteAllSessions}
+          onPress={handleAddSession}
+        >
+          <PlusIcon />
+        </TouchableOpacity>
+      </CustomScreenContainer>
+    </>
   );
 }
 
@@ -68,6 +90,7 @@ const styles = StyleSheet.create({
   container: {
     rowGap: 20,
     paddingVertical: 20,
+    flex: 1,
   },
   header: {
     rowGap: 16,

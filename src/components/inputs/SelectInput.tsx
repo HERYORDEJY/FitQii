@@ -37,7 +37,6 @@ export default function SelectInput(props: Props): React.JSX.Element {
 
   const handleOpenSelect = () => {
     sheetRef.current?.open({
-      title: "Hello World",
       items: [...Array(10).keys()],
     });
   };
@@ -91,7 +90,7 @@ export default function SelectInput(props: Props): React.JSX.Element {
         return option.value === props.selectedOptionValue;
       });
     });
-  }, []);
+  }, [props.selectedOptionValue]);
 
   return (
     <>

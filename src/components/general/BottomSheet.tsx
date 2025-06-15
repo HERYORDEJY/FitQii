@@ -105,14 +105,16 @@ const BottomSheet = forwardRef<BottomSheetRef, Props>(
             {showHeader ? (
               <View style={styles.header}>
                 <View style={styles.titleWrapper}>
-                  <CustomText
-                    fontSize={16}
-                    fontFamily={"bold"}
-                    numberOfLines={1}
-                    color={"#FFF"}
-                  >
-                    {props.title ?? openParams?.title}
-                  </CustomText>
+                  {Boolean(props.title ?? openParams?.title) ? (
+                    <CustomText
+                      fontSize={16}
+                      fontFamily={"bold"}
+                      numberOfLines={1}
+                      color={"#FFF"}
+                    >
+                      {props.title ?? openParams?.title}
+                    </CustomText>
+                  ) : null}
                 </View>
                 <View style={styles.closeWrapper}>
                   <Pressable onPress={animateOut} style={[styles.closeButton]}>

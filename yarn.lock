@@ -2583,6 +2583,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:4.39.2":
+  version: 4.39.2
+  resolution: "@tanstack/query-core@npm:4.39.2"
+  checksum: 10c0/b4ff061282b59d9dd33cd48a047b6bcae27df9791407f7856851fe01fa1f7455b8880e95cd530972fb6cf99f7d02414fa42d47e663d2c9996d311de46f0103e8
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:4":
+  version: 4.39.2
+  resolution: "@tanstack/react-query@npm:4.39.2"
+  dependencies:
+    "@tanstack/query-core": "npm:4.39.2"
+    use-sync-external-store: "npm:^1.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-native: "*"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 10c0/037ce4758da80f60bc9e018b1aa90f120d4499a91b1da1a36c703226586086a33eebdb42d9986927d53bd4f686d279381e902eea7dd4d7cbe0d57f8905083c67
+  languageName: node
+  linkType: hard
+
 "@tybys/wasm-util@npm:^0.9.0":
   version: 0.9.0
   resolution: "@tybys/wasm-util@npm:0.9.0"
@@ -5711,6 +5737,7 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:^7.3.10"
     "@react-navigation/elements": "npm:^2.3.8"
     "@react-navigation/native": "npm:^7.1.6"
+    "@tanstack/react-query": "npm:4"
     "@types/react": "npm:~19.0.10"
     babel-plugin-inline-import: "npm:^3.0.0"
     date-fns: "npm:^4.1.0"
@@ -5738,6 +5765,7 @@ __metadata:
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
     react-native: "npm:0.79.3"
+    react-native-actions-sheet: "npm:^0.9.7"
     react-native-gesture-handler: "npm:~2.24.0"
     react-native-modal-datetime-picker: "npm:^18.0.0"
     react-native-reanimated: "npm:~3.17.4"
@@ -8491,6 +8519,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-actions-sheet@npm:^0.9.7":
+  version: 0.9.7
+  resolution: "react-native-actions-sheet@npm:0.9.7"
+  peerDependencies:
+    react-native: "*"
+    react-native-gesture-handler: "*"
+    react-native-safe-area-context: "*"
+  checksum: 10c0/4bf9ba68635e4dd14c3c4534e08515d051db4ea272f1ad71185663bf6c84387bc25a873fcb59b89e7699ed80b9afa3c26f20d915a1a959e7e77cdc0986069f8e
+  languageName: node
+  linkType: hard
+
 "react-native-edge-to-edge@npm:1.6.0":
   version: 1.6.0
   resolution: "react-native-edge-to-edge@npm:1.6.0"
@@ -10172,7 +10211,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.5.0":
+"use-sync-external-store@npm:^1.2.0, use-sync-external-store@npm:^1.5.0":
   version: 1.5.0
   resolution: "use-sync-external-store@npm:1.5.0"
   peerDependencies:

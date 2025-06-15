@@ -4,6 +4,18 @@ import { useEffect } from "react";
 import "~/db";
 import { ToastNotificationProvider } from "~/contextAPI/toast-notification";
 import ToastNotification from "~/components/general/ToastNotification";
+import { SheetProvider } from "react-native-actions-sheet";
+import { QueryClient } from "@tanstack/query-core";
+import { QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+  },
+});
 
 function RootLayout() {
   const [loaded, error] = useFonts({
@@ -29,9 +41,13 @@ function RootLayout() {
 
 export default function AppLayout() {
   return (
-    <ToastNotificationProvider>
-      <RootLayout />
-      <ToastNotification />
-    </ToastNotificationProvider>
+    <QueryClientProvider client={queryClient}>
+      <SheetProvider>
+        <ToastNotificationProvider>
+          <RootLayout />
+          <ToastNotification />
+        </ToastNotificationProvider>
+      </SheetProvider>
+    </QueryClientProvider>
   );
 }

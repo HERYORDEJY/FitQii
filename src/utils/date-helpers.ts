@@ -16,7 +16,7 @@ export function getWeekDates(referenceDate: Date = new Date()): Array<Date> {
   saturday.setHours(23, 59, 59, 999);
 
   // Generate all dates in the week
-  const weekDates: Date[] = [];
+  const weekDates: Array<Date> = [];
   const currentDate = new Date(sunday);
 
   while (currentDate <= saturday) {
@@ -27,7 +27,11 @@ export function getWeekDates(referenceDate: Date = new Date()): Array<Date> {
   return weekDates;
 }
 
-function isValidDate(date: any): date is Date {
+export function isValidDate(date: any): date is Date {
+  if (Boolean(date) && date >= 1735689600000) {
+    // 1735689600000 is equivalent to 2025-01-01T00:00:00.000Z
+    return true;
+  }
   return date instanceof Date && !isNaN(date.getTime());
 }
 

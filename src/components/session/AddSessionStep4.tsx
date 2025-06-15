@@ -29,7 +29,10 @@ export default function AddSessionStep4({
   formData,
   ...props
 }: Props): React.JSX.Element {
-  // console.log("\n\n formData :>> \t\t", formData, "\n\n---");
+  const isLocationLink =
+    `${formData?.step3?.location}`.match(urlRegex) ||
+    `${formData?.step3?.location}`?.startsWith("https://") ||
+    `${formData?.step3?.location}`?.startsWith("http://");
 
   const handleOpenLink = async () => {
     try {
@@ -40,6 +43,9 @@ export default function AddSessionStep4({
   };
 
   const handleOpenLocation = async () => {
+    if (!isLocationLink) {
+      return;
+    }
     try {
       await Linking.openURL(formData.step3.location);
     } catch (error: any) {
@@ -50,7 +56,7 @@ export default function AddSessionStep4({
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={[styles.contentContainer]}>
-        <View style={[styles.itemsWrapper]}>
+        <View style={[styles.itemsWrapper, { flex: 1 }]}>
           <View style={[styles.sessionTitleWrapper]}>
             <CustomText fontSize={22} fontFamily={"medium"}>
               {formData?.step1.name}
@@ -87,11 +93,16 @@ export default function AddSessionStep4({
 
           {Boolean(formData.step3.link) ? (
             <View style={[styles.stepItemRow]}>
-              <LinkIcon width={20} height={20} />
+              <View style={{}}>
+                <LinkIcon width={20} height={20} />
+              </View>
               <CustomText
                 fontSize={16}
                 color={"#0961F5"}
                 onPress={handleOpenLink}
+                numberOfLines={2}
+                ellipsizeMode={"middle"}
+                // style={{ flex: 1 }}
               >
                 {formData.step3.link}
               </CustomText>
@@ -99,20 +110,20 @@ export default function AddSessionStep4({
           ) : null}
 
           {Boolean(formData.step3.location) ? (
-            <View style={[styles.stepItemRow]}>
+            <View
+              style={[
+                styles.stepItemRow,
+                { minHeight: 40, maxHeight: undefined },
+              ]}
+            >
               <LocationIcon width={20} height={20} />
               <CustomText
+                numberOfLines={2}
                 fontSize={16}
-                color={
-                  `${formData.step3.location}`.match(urlRegex)
-                    ? "#0961F5"
-                    : COLORS.text.primary
-                }
-                onPress={
-                  `${formData.step3.location}`.match(urlRegex)
-                    ? handleOpenLocation
-                    : undefined
-                }
+                color={isLocationLink ? "#0961F5" : COLORS.text.primary}
+                onPress={handleOpenLocation}
+                disabled={!isLocationLink}
+                style={{}}
               >
                 {formData.step3.location}
               </CustomText>
@@ -216,7 +227,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     columnGap: 12,
-    height: 40,
+    minHeight: 40,
+    overflow: "hidden",
+    width: "100%",
   },
   sessionTitleWrapper: {
     borderLeftWidth: 6,
