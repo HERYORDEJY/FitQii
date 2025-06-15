@@ -48,3 +48,4 @@ scratch
 *.env
 *.env**
 *.env.**
+drizzle/
