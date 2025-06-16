@@ -25,15 +25,13 @@ import { errorLogOnDev } from "~/utils/log-helpers";
 interface Props extends Partial<SectionListProps<SessionItemDataType>> {
   containerStyle?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
-  searchQuery?: string; // Optional prop for search functionality
+  searchQuery?: string;
   selectedDate?: {
     date: Date;
     index: number;
   };
   headerHeight: number;
 }
-const ITEM_HEIGHT = 60;
-const HEADER_HEIGHT = 40;
 
 export default function SessionsList(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
@@ -179,11 +177,10 @@ export default function SessionsList(props: Props): React.JSX.Element {
   return (
     <>
       <SectionList
-        ref={sectionListRef}
+        {...props}
         // @ts-ignore
         sections={weeksSessionsQuery?.data ?? []}
-        {...props}
-        // style={[styles.container, props.containerStyle]}
+        ref={sectionListRef}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         contentContainerStyle={[

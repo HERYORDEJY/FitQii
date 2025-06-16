@@ -26,6 +26,8 @@ import CustomActivityIndicator from "~/components/general/CustomActivityIndicato
 import { isValidDate } from "~/utils/date-helpers";
 import { router } from "expo-router";
 import { useDeleteSession, useUpdateSession } from "~/services/db/actions";
+import PrimaryButton from "~/components/buttons/PrimaryButton";
+import SecondaryButton from "~/components/buttons/SecondaryButton";
 
 interface Props extends CustomBottomSheetContainerProps {
   sessionData?: SessionItemDataType;
@@ -277,26 +279,14 @@ export default function ViewSessionSheet({
 
           {isSessionUpcoming || isSessionPending ? (
             <View style={[styles.footer]}>
-              <TouchableOpacity
+              <SecondaryButton
                 style={[styles.cancelButton]}
                 onPress={handleDelete}
+                titleStyle={{ color: "#FF0000" }}
               >
-                <CustomText color={"#FF0000"} fontFamily={"bold"} fontSize={16}>
-                  Delete
-                </CustomText>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.nextButton]}
-                onPress={handleEdit}
-              >
-                <CustomText
-                  color={COLORS.background.screen}
-                  fontFamily={"bold"}
-                  fontSize={16}
-                >
-                  Edit
-                </CustomText>
-              </TouchableOpacity>
+                Delete
+              </SecondaryButton>
+              <PrimaryButton onPress={handleEdit}>Edit</PrimaryButton>
             </View>
           ) : null}
         </View>

@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import SearchInput from "~/components/inputs/SearchInput";
 import CustomScreenContainer from "~/components/general/CustomScreenContainer";
 import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
-import { getWeekDates } from "~/utils/date-helpers";
 import HistoryList from "~/components/session/HistoryList";
 
 export default function History(): React.JSX.Element {
-  const { weekDates } = getWeekDates();
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchSession = () => {
     // TODO:: implement search for session
@@ -17,7 +17,10 @@ export default function History(): React.JSX.Element {
   return (
     <CustomScreenContainer>
       {/*  Header */}
-      <View style={[styles.header]}>
+      <View
+        style={[styles.header]}
+        onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+      >
         <View style={[styles.navbar]}>
           <View style={[styles.navbarLeft]}>
             <CustomText fontFamily={"medium"} fontSize={22}>
@@ -28,13 +31,17 @@ export default function History(): React.JSX.Element {
         <SearchInput
           placeholder={" Search by Session..."}
           containerStyle={{ marginHorizontal: 20 }}
-          onChangeText={handleSearchSession}
+          onChangeText={setSearchQuery}
         />
 
         <View style={[styles.headerLine]} />
       </View>
       <View style={styles.container}>
-        <HistoryList contentContainerStyle={{ paddingHorizontal: 20 }} />
+        <HistoryList
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          searchQuery={searchQuery}
+          headerHeight={headerHeight}
+        />
       </View>
     </CustomScreenContainer>
   );
