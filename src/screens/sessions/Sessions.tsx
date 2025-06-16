@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import SearchInput from "~/components/inputs/SearchInput";
 import CustomScreenContainer from "~/components/general/CustomScreenContainer";
@@ -11,21 +11,23 @@ import SessionsList from "~/components/session/SessionsList";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 
+let todayStart = new Date();
+todayStart.setHours(0, 0, 0, 0);
+
 export default function Sessions(): React.JSX.Element {
-  const weekDates = getWeekDates();
+  const { weekDates, currentWeekDate } = getWeekDates();
   const safeAreaInsets = useSafeAreaInsets();
   const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDate, setSelectedDate] = useState(currentWeekDate);
+  const [headerHeight, setHeaderHeight] = useState(0);
 
-  const handleSelectDateRowItem = () => {
-    // TODO:: implement select date row item action
+  const handleSelectDateRowItem = (date: Date, index: number) => {
+    setSelectedDate({ date, index });
   };
 
   const handleAddSession = () => {
     router.push("/add-session");
-  };
-
-  const handleSearchSession = () => {
-    // TODO:: implement search for session
   };
 
   return (
@@ -35,7 +37,7 @@ export default function Sessions(): React.JSX.Element {
         <View style={[styles.navbar]}>
           <View style={[styles.navbarLeft]}>
             <CustomText fontFamily={"medium"} fontSize={22}>
-              8 July, 2024
+              {format(new Date(), "d MMMM, yyyy")}
             </CustomText>
             <CustomText>Today</CustomText>
           </View>
@@ -43,15 +45,18 @@ export default function Sessions(): React.JSX.Element {
         <SearchInput
           placeholder={" Search by Session..."}
           containerStyle={{ marginHorizontal: 20 }}
-          onChangeText={handleSearchSession}
+          onChangeText={setSearchQuery}
         />
 
-        <View style={[styles.dateRow]}>
-          {weekDates.map((date) => {
+        <View
+          style={[styles.dateRow]}
+          onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
+        >
+          {weekDates.map((date, index) => {
             return (
               <TouchableOpacity
                 key={new Date(date).toLocaleDateString()}
-                onPress={handleSelectDateRowItem}
+                onPress={() => handleSelectDateRowItem(date, index)}
                 style={[styles.dateRowItem]}
               >
                 <CustomText
@@ -83,7 +88,12 @@ export default function Sessions(): React.JSX.Element {
         <View style={[styles.headerLine]} />
       </View>
       <View style={styles.container}>
-        <SessionsList contentContainerStyle={{ paddingHorizontal: 20 }} />
+        <SessionsList
+          selectedDate={selectedDate}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          searchQuery={searchQuery}
+          headerHeight={headerHeight}
+        />
       </View>
 
       <TouchableOpacity
@@ -100,6 +110,7 @@ const styles = StyleSheet.create({
   container: {
     rowGap: 20,
     paddingVertical: 20,
+    flex: 1,
   },
   header: {
     rowGap: 16,

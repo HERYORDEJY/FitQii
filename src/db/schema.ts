@@ -8,6 +8,12 @@ export const sessionsSchema = sqliteTable("sessions_table", {
     .notNull()
     .default(sql`(unixepoch())`),
   updated_at: int("updated_at", { mode: "number" }),
+  status: text({
+    enum: ["pending", "completed", "cancelled", "active", "upcoming"],
+  })
+    .notNull()
+    .default("upcoming"),
+  status_at: int("status_at", { mode: "number" }),
   // step1
   name: text().notNull(),
   category: text().notNull(),
@@ -25,9 +31,4 @@ export const sessionsSchema = sqliteTable("sessions_table", {
   location: text(),
   description: text(),
   attachments: blob({ mode: "json" }).$type<Array<DocumentPickerAsset>>(),
-  status: text({
-    enum: ["pending", "completed", "cancelled", "active", "upcoming"],
-  })
-    .notNull()
-    .default("upcoming"),
 });

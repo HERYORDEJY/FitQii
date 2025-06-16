@@ -1,8 +1,9 @@
 import { sessionsDb } from "~/db";
 import { sessionsSchema } from "~/db/schema";
 import { SessionItemDataType } from "~/components/session/types";
-import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { and, desc, eq, gte, like, lte } from "drizzle-orm";
 import { errorLogOnDev, logOnDev } from "~/utils/log-helpers";
+import { getWeekDates } from "~/utils/date-helpers";
 
 class SessionDatabaseService {
   private db: typeof sessionsDb;
@@ -192,6 +193,77 @@ class SessionDatabaseService {
     } catch (error) {
       errorLogOnDev("Error fetching today's sessions:", error);
       throw new Error("Failed to fetch today's sessions");
+    }
+  }
+
+  /**
+   * Get week's sessions using database-level filtering
+   * and grouped for section-list
+   */
+  async getWeekSessions({
+    searchQuery,
+    referenceDate = new Date(),
+    week,
+  }: {
+    searchQuery?: string;
+    referenceDate?: Date;
+    week?: number;
+  }): Promise<Array<{ title: Date; data: Array<SessionItemDataType> }>> {
+    try {
+      const result: Array<{ title: Date; data: Array<SessionItemDataType> }> =
+        [];
+      const { weekDates } = getWeekDates(referenceDate);
+      for (const date of weekDates) {
+        const title = new Date(
+          new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            0,
+            0,
+            0,
+            0,
+          ),
+        );
+        // const data = [];
+        const now = new Date(date),
+          nowStart = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            0,
+            0,
+            0,
+            0,
+          ).getTime(),
+          nowEnd = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            23,
+            59,
+            59,
+            999,
+          ).getTime();
+        const wildcardSearchQuery = `%${searchQuery?.toLowerCase()}%`;
+        const data = (await this.db
+          .select()
+          .from(this.schema)
+          .where(
+            and(
+              lte(this.schema.start_date, nowEnd),
+              gte(this.schema.end_date, nowStart),
+              like(this.schema.name, wildcardSearchQuery),
+            ),
+          )) as Array<SessionItemDataType>;
+
+        result.push({ title, data });
+      }
+
+      return result;
+    } catch (error) {
+      errorLogOnDev("Error fetching week's sessions:", error);
+      throw new Error("Failed to fetch week's sessions");
     }
   }
 

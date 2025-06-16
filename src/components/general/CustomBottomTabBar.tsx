@@ -76,7 +76,11 @@ export default function CustomBottomTabBar({
 
   return (
     <>
-      <Animated.View style={{ opacity }}>
+      <Animated.View
+        style={{
+          opacity,
+        }}
+      >
         <BlurView
           tint={"dark"}
           intensity={60}
@@ -84,6 +88,8 @@ export default function CustomBottomTabBar({
             position: "absolute",
             height: BAR_HEIGHT,
             bottom: Platform.OS === "ios" ? 0 : -10,
+            backgroundColor:
+              Platform.OS === "ios" ? undefined : COLORS.background.card,
           }}
         >
           <Animated.View style={[styles.container]}>

@@ -8,7 +8,7 @@ import { getWeekDates } from "~/utils/date-helpers";
 import HistoryList from "~/components/session/HistoryList";
 
 export default function History(): React.JSX.Element {
-  const weekDates = getWeekDates();
+  const { weekDates } = getWeekDates();
 
   const handleSearchSession = () => {
     // TODO:: implement search for session

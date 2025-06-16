@@ -165,7 +165,10 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
 
   const handleSessionStatus = async (status: SessionItemDataType["status"]) => {
     try {
-      await updateSession.mutateAsync({ id: props.item.id, data: { status } });
+      await updateSession.mutateAsync({
+        id: props.item.id,
+        data: { status, status_at: new Date().getTime() },
+      });
       reanimatedSwipeableRef.current?.close();
     } catch (error) {
       throw error;

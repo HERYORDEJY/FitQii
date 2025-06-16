@@ -17,4 +17,5 @@ export interface SessionItemDataType {
   start_time: number;
   timezone: string;
   status: "pending" | "completed" | "cancelled" | "active" | "upcoming";
+  status_at: number | null;
 }

@@ -19,6 +19,7 @@ export const sessionQueryKeys = {
   details: () => [...sessionQueryKeys.all, "detail"] as const,
   detail: (id: number) => [...sessionQueryKeys.details(), id] as const,
   today: () => [...sessionQueryKeys.all, "today"] as const,
+  week: () => [...sessionQueryKeys.all, "week"] as const,
   byDate: (date: string) => [...sessionQueryKeys.all, "byDate", date] as const,
   dateRange: (start: string, end: string) =>
     [...sessionQueryKeys.all, "dateRange", start, end] as const,
@@ -88,6 +89,41 @@ export const useTodaySessions = (
     queryKey: sessionQueryKeys.today(),
     queryFn: async () => {
       return await sessionsDbService.getTodaySessions();
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
+    gcTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000, // Auto-refetch every 5 minutes
+    ...options,
+  });
+};
+
+/**
+ * Get week's sessions
+ */
+export const useWeeksSessions = (
+  options?: Omit<
+    UseQueryOptions<Array<SessionItemDataType>, Error>,
+    "queryFn"
+  > & { searchQuery?: string; referenceDate?: Date; week?: number },
+  searchQuery?: string,
+) => {
+  return useQuery({
+    // @ts-ignore
+    queryKey: [
+      ...sessionQueryKeys.week(),
+      {
+        searchQuery: options?.searchQuery,
+        week: options?.week,
+        referenceDate: options?.referenceDate,
+      },
+    ],
+    // @ts-ignore
+    queryFn: async () => {
+      return await sessionsDbService.getWeekSessions({
+        searchQuery: options?.searchQuery,
+        referenceDate: new Date(),
+        week: options?.week,
+      });
     },
     staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
     gcTime: 5 * 60 * 1000,

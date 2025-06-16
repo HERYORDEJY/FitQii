@@ -1,4 +1,10 @@
-export function getWeekDates(referenceDate: Date = new Date()): Array<Date> {
+export function getWeekDates(referenceDate: Date = new Date()): {
+  weekDates: Array<Date>;
+  currentWeekDate: { date: Date; index: number };
+} {
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   // Create a copy of the reference date to avoid mutation
   const date = new Date(referenceDate);
 
@@ -24,7 +30,13 @@ export function getWeekDates(referenceDate: Date = new Date()): Array<Date> {
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
-  return weekDates;
+  return {
+    weekDates,
+    currentWeekDate: {
+      date: today,
+      index: weekDates?.findIndex((date) => date === today),
+    },
+  };
 }
 
 export function isValidDate(date: any): date is Date {
@@ -60,4 +72,16 @@ function isDateToday(date: Date): boolean {
     date.getMonth() === today.getMonth() &&
     date.getDate() === today.getDate()
   );
+}
+
+export function convertMinutesToHourMinute(minutes: string | number) {
+  if (isNaN(Number(minutes))) {
+    return null;
+  }
+
+  minutes = Number(minutes);
+  return {
+    hours: Math.floor(minutes / 60),
+    minutes: minutes % 60,
+  };
 }

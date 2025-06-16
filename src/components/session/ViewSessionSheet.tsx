@@ -29,10 +29,12 @@ import { useDeleteSession, useUpdateSession } from "~/services/db/actions";
 
 interface Props extends CustomBottomSheetContainerProps {
   sessionData?: SessionItemDataType;
+  showStatus?: boolean;
 }
 
 export default function ViewSessionSheet({
   sessionData,
+  showStatus = true,
   ...props
 }: Props): React.JSX.Element {
   const isSessionUpcoming = sessionData?.status === "upcoming";
@@ -62,28 +64,6 @@ export default function ViewSessionSheet({
       await Linking.openURL(sessionData?.location!);
     } catch (error: any) {
       //
-    }
-  };
-
-  const handleSessionStatus = async (status: SessionItemDataType["status"]) => {
-    try {
-      await updateSession.mutateAsync({
-        id: sessionData?.id!,
-        data: { status },
-      });
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const handleCancel = async () => {
-    try {
-      await handleSessionStatus("cancelled");
-      props.sheetRef.current?.hide();
-      toastNotification.success("Session cancelled successfully.");
-      // onActionCompleted?.();
-    } catch (error: any) {
-      toastNotification.error("Unable to cancel session.");
     }
   };
 
@@ -152,14 +132,16 @@ export default function ViewSessionSheet({
                 </CustomText>
               </View>
 
-              <CustomText
-                fontSize={12}
-                color={COLORS.secondary}
-                fontFamily={"medium"}
-                style={{ textTransform: "capitalize" }}
-              >
-                🧭 {sessionData?.status}
-              </CustomText>
+              {showStatus ? (
+                <CustomText
+                  fontSize={12}
+                  color={COLORS.secondary}
+                  fontFamily={"medium"}
+                  style={{ textTransform: "capitalize" }}
+                >
+                  🧭 {sessionData?.status}
+                </CustomText>
+              ) : null}
 
               {isValidDate(sessionData?.start_date) &&
               isValidDate(sessionData?.end_date) ? (
