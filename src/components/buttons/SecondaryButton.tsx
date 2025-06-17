@@ -44,7 +44,7 @@ export default function SecondaryButton(props: Props): React.JSX.Element {
           <CustomText
             color={COLORS.primary}
             fontFamily={"bold"}
-            fontSize={16}
+            fontSize={props.titleStyle?.fontSize ?? 16}
             style={[props.titleStyle]}
           >
             {props.children}
