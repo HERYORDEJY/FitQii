@@ -3,7 +3,10 @@ import { sessionsSchema } from "~/db/schema";
 import { SessionItemDataType } from "~/components/session/types";
 import { and, desc, eq, gte, like, lte } from "drizzle-orm";
 import { errorLogOnDev, logOnDev } from "~/utils/log-helpers";
-import { getWeekDates } from "~/utils/date-helpers";
+import {
+  getDatesFromReferenceTillNowModern,
+  getWeekDates,
+} from "~/utils/date-helpers";
 
 class SessionDatabaseService {
   private db: typeof sessionsDb;
@@ -32,6 +35,23 @@ class SessionDatabaseService {
         .select()
         .from(this.schema)
         .orderBy(desc(this.schema.start_date))) as Array<SessionItemDataType>;
+    } catch (error) {
+      errorLogOnDev("Error fetching all sessions:", error);
+      throw new Error("Failed to fetch sessions");
+    }
+  }
+
+  /**
+   * Get first sessions in databse
+   */
+  async getFirstSessionsInDb(): Promise<SessionItemDataType> {
+    try {
+      return (
+        (await this.db
+          .select()
+          .from(this.schema)
+          .limit(1)) as Array<SessionItemDataType>
+      )[0];
     } catch (error) {
       errorLogOnDev("Error fetching all sessions:", error);
       throw new Error("Failed to fetch sessions");
@@ -272,20 +292,20 @@ class SessionDatabaseService {
    * i.e. sessions that occurred in the past
    * and grouped for section-list
    */
-  async getPastSessions({
-    searchQuery,
-    referenceDate = new Date(),
-    week,
-  }: {
-    searchQuery?: string;
-    referenceDate?: Date;
-    week?: number;
-  }): Promise<Array<{ title: Date; data: Array<SessionItemDataType> }>> {
+  async getPastSessions(
+    searchQuery?: string,
+  ): Promise<Array<{ title: Date; data: Array<SessionItemDataType> }>> {
     try {
+      const firstSessionInDb = await this.getFirstSessionsInDb();
       const result: Array<{ title: Date; data: Array<SessionItemDataType> }> =
         [];
-      const { weekDates } = getWeekDates(referenceDate);
-      for (const date of weekDates) {
+      const { weekDates } = getWeekDates();
+      const datesFromReferenceTillNowModern =
+        getDatesFromReferenceTillNowModern(
+          new Date(firstSessionInDb.start_date),
+        );
+
+      for (const date of datesFromReferenceTillNowModern) {
         const title = new Date(
           new Date(
             date.getFullYear(),

@@ -85,3 +85,31 @@ export function convertMinutesToHourMinute(minutes: string | number) {
     minutes: minutes % 60,
   };
 }
+
+export function getDatesFromReferenceTillNowModern(
+  referenceDate: Date | string,
+): Array<Date> {
+  const startDate = new Date(referenceDate);
+
+  if (isNaN(startDate.getTime())) {
+    throw new Error("Invalid reference date");
+  }
+
+  const endDate = new Date();
+  const [start, end] =
+    startDate <= endDate ? [startDate, endDate] : [endDate, startDate];
+  const isReverse = startDate > endDate;
+
+  // Calculate days between dates
+  const daysDiff =
+    Math.floor((end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+
+  // Generate array using Array.from for cleaner code
+  const dates = Array.from({ length: daysDiff }, (_, i) => {
+    const date = new Date(start);
+    date.setDate(date.getDate() + i);
+    return date;
+  });
+
+  return isReverse ? dates.reverse() : dates;
+}

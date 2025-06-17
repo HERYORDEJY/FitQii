@@ -15,12 +15,12 @@ import {
 import CustomText from "~/components/general/CustomText";
 import { format } from "date-fns";
 import { COLORS } from "~/constants/Colors";
-import TodaySessionListItem from "~/components/session/TodaySessionListItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SessionItemDataType } from "~/components/session/types";
 import { errorLogOnDev } from "~/utils/log-helpers";
-import { useWeeksSessions } from "~/services/db/actions";
+import { usePastSessions, useWeeksSessions } from "~/services/db/actions";
 import CustomActivityIndicator from "~/components/general/CustomActivityIndicator";
+import HistoryListItem from "~/components/session/HistoryListItem";
 
 interface Props extends Partial<SectionListProps<SessionItemDataType>> {
   containerStyle?: StyleProp<ViewStyle>;
@@ -40,6 +40,10 @@ export default function HistoryList(props: Props): React.JSX.Element {
   const [itemHeight, setItemHeight] = useState(0);
 
   const weeksSessionsQuery = useWeeksSessions({
+    searchQuery: props.searchQuery,
+  });
+
+  const pastSessionsQuery = usePastSessions({
     searchQuery: props.searchQuery,
   });
 
@@ -67,7 +71,7 @@ export default function HistoryList(props: Props): React.JSX.Element {
       const isLastItem = index === section.data.length - 1;
       return (
         <View onLayout={(event) => handleSetItemHeight(event, index)}>
-          <TodaySessionListItem item={item} key={`${index}`} />
+          <HistoryListItem item={item} key={`${index}`} />
           {isLastItem ? <View style={[styles.headerLine]} /> : null}
         </View>
       );
@@ -165,7 +169,7 @@ export default function HistoryList(props: Props): React.JSX.Element {
     <SectionList
       {...props}
       // @ts-ignore
-      sections={weeksSessionsQuery?.data ?? []}
+      sections={pastSessionsQuery?.data ?? []}
       ref={sectionListRef}
       {...props}
       renderItem={renderItem}

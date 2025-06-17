@@ -20,6 +20,7 @@ export const sessionQueryKeys = {
   detail: (id: number) => [...sessionQueryKeys.details(), id] as const,
   today: () => [...sessionQueryKeys.all, "today"] as const,
   week: () => [...sessionQueryKeys.all, "week"] as const,
+  past: () => [...sessionQueryKeys.all, "past"] as const,
   byDate: (date: string) => [...sessionQueryKeys.all, "byDate", date] as const,
   dateRange: (start: string, end: string) =>
     [...sessionQueryKeys.all, "dateRange", start, end] as const,
@@ -124,6 +125,35 @@ export const useWeeksSessions = (
         referenceDate: new Date(),
         week: options?.week,
       });
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
+    gcTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000, // Auto-refetch every 5 minutes
+    ...options,
+  });
+};
+
+/**
+ * Get past sessions
+ */
+export const usePastSessions = (
+  options?: Omit<
+    UseQueryOptions<Array<SessionItemDataType>, Error>,
+    "queryFn"
+  > & { searchQuery?: string },
+  searchQuery?: string,
+) => {
+  return useQuery({
+    // @ts-ignore
+    queryKey: [
+      ...sessionQueryKeys.past(),
+      {
+        searchQuery: options?.searchQuery,
+      },
+    ],
+    // @ts-ignore
+    queryFn: async () => {
+      return await sessionsDbService.getPastSessions(options?.searchQuery);
     },
     staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
     gcTime: 5 * 60 * 1000,
@@ -393,61 +423,3 @@ export const usePrefetchSession = () => {
     prefetchTodaySessions,
   };
 };
-
-// ====================
-// USAGE EXAMPLES
-// ====================
-
-/*
-// In your React component:
-
-import React from 'react';
-import { 
-  useAllSessions, 
-  useTodaySessions, 
-  useCreateSession, 
-  useUpdateSession, 
-  useDeleteSession 
-} from './session-queries';
-
-export const SessionsComponent = () => {
-  const { data: allSessions, isLoading, error } = useAllSessions();
-  const { data: todaySessions } = useTodaySessions();
-  
-  const createMutation = useCreateSession();
-  const updateMutation = useUpdateSession();
-  const deleteMutation = useDeleteSession();
-
-  const handleCreateSession = () => {
-    createMutation.mutate({
-      start_date: new Date(),
-      end_date: new Date(Date.now() + 3600000),
-    });
-  };
-
-  const handleUpdateSession = (id: number) => {
-    updateMutation.mutate({
-      id,
-      data: { start_date: new Date() },
-    });
-  };
-
-  const handleDeleteSession = (id: number) => {
-    deleteMutation.mutate(id);
-  };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-
-  return (
-    <div>
-      <h2>All Sessions ({allSessions?.length})</h2>
-      <h3>Today's Sessions ({todaySessions?.length})</h3>
-      
-      <button onClick={handleCreateSession}>
-        Create Session
-      </button>
-    </div>
-  );
-};
-*/
