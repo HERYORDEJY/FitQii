@@ -1,7 +1,8 @@
 import React from "react";
 import { fireEvent, render } from "@testing-library/react-native";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import SecondaryButton from "~/components/buttons/SecondaryButton";
+import CustomText from "~/components/general/CustomText";
 
 describe(`SecondaryButton`, () => {
   it("renders with string children", () => {
@@ -10,7 +11,7 @@ describe(`SecondaryButton`, () => {
   });
 
   it("renders with JSX children", () => {
-    const jsx = <Text>Custom</Text>;
+    const jsx = <CustomText>Custom</CustomText>;
     const { getByText } = render(<SecondaryButton>{jsx}</SecondaryButton>);
     expect(getByText("Custom")).toBeTruthy();
   });
