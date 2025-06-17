@@ -8,25 +8,24 @@ interface Props extends BlurViewProps {
   position?: "overlay" | string;
 }
 
-function CustomBlurBackground(props: Props) {
+function CustomBlurBackground({
+  children,
+  blurAmount,
+  blurType,
+  style,
+  ...props
+}: Props) {
   const isOverlay = props.position === "overlay";
 
-  /*
-  if (Platform.OS === "android") {
-    return (
-      <View style={[styles.androidBlur, isOverlay && styles.overlay]}>
-        {props.children}
-      </View>
-    );
-  }
-*/
   return (
     <BlurView
-      intensity={props.blurAmount}
-      tint={props.blurType}
+      testID="blur-view"
+      {...props}
+      intensity={blurAmount}
+      tint={blurType}
       style={[styles.blurContainer, isOverlay && styles.overlay]}
     >
-      {props.children}
+      {children}
     </BlurView>
   );
 }

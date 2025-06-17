@@ -26,8 +26,15 @@ export default function CustomActivityIndicator({
   const isOverlay = props.position === "overlay";
 
   const renderIndicatorContent = (
-    <View style={[styles.container, props.style, isOverlay && styles.overlay]}>
-      <ActivityIndicator size={size} color={props.color ?? COLORS.primary} />
+    <View
+      style={[styles.container, props.style, isOverlay && styles.overlay]}
+      testID={"activity-container"}
+    >
+      <ActivityIndicator
+        testID={"activity-indicator"}
+        size={size}
+        color={props.color ?? COLORS.primary}
+      />
       {props.title || props.description ? (
         <View style={styles.bodyWrapper}>
           {props.title ? (
@@ -45,8 +52,12 @@ export default function CustomActivityIndicator({
 
   if (isBlurredBackgroundType) {
     return (
-      <View style={styles.overlayContainer} pointerEvents="box-none">
-        <CustomBlurBackground position={props.position}>
+      <View
+        testID={"blur-background"}
+        style={styles.overlayContainer}
+        pointerEvents="box-none"
+      >
+        <CustomBlurBackground testID={"blur-view"} position={props.position}>
           {renderIndicatorContent}
         </CustomBlurBackground>
       </View>
