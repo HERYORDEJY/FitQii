@@ -18,7 +18,7 @@ import RepeatIcon from "~/components/svgs/RepeatIcon";
 import AttachmentIcon from "~/components/svgs/AttachmentIcon";
 import * as DocumentPicker from "expo-document-picker";
 import { SessionItemDataType } from "~/components/session/types";
-import { useToastNotification } from "~/hooks/useToastNotification";
+import { toast } from "sonner-native";
 import CustomActionSheet, {
   CustomActionSheetContainerProps,
 } from "~/components/general/CustomActionSheet";
@@ -40,7 +40,6 @@ export default function ViewSessionSheet({
 }: Props): React.JSX.Element {
   const isSessionUpcoming = sessionData?.status === "upcoming";
   const isSessionPending = sessionData?.status === "pending";
-  const toastNotification = useToastNotification();
   const isLocationLink =
     `${sessionData?.location}`.match(urlRegex) ||
     `${sessionData?.location}`?.startsWith("https://") ||
@@ -74,10 +73,10 @@ export default function ViewSessionSheet({
   const handleDelete = async () => {
     try {
       await deleteSession.mutateAsync(sessionData?.id!);
-      toastNotification.success("Session deleted successfully.");
+      toast.success("Session deleted successfully.");
       props.sheetRef.current?.hide();
     } catch (error) {
-      toastNotification.error("Unable to delete session.");
+      toast.error("Unable to delete session.");
 
       throw error;
     }

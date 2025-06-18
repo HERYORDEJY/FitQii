@@ -31,14 +31,6 @@ jest.mock("~/services/db/actions", () => ({
   })),
 }));
 
-// Mock toast notification hook
-jest.mock("~/hooks/useToastNotification", () => ({
-  useToastNotification: jest.fn(() => ({
-    success: jest.fn(),
-    error: jest.fn(),
-  })),
-}));
-
 // Mock date helpers
 jest.mock("~/utils/date-helpers", () => ({
   isValidDate: jest.fn((date) => {
@@ -211,11 +203,9 @@ describe("TodaySessionListItem", () => {
       useDeleteSession,
       useUpdateSession,
     } = require("~/services/db/actions");
-    const { useToastNotification } = require("~/hooks/useToastNotification");
 
     useDeleteSession.mockReturnValue(mockDeleteSession);
     useUpdateSession.mockReturnValue(mockUpdateSession);
-    useToastNotification.mockReturnValue(mockToastNotification);
   });
 
   const renderToastNotificationProvider = (ui: React.ReactElement) => {

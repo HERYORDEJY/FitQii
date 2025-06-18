@@ -17,11 +17,11 @@ import PlusIcon from "~/components/svgs/PlusIcon";
 import AddSessionStep4 from "~/components/session/AddSessionStep4";
 import { urlRegex } from "~/utils/regex-helpers";
 import { router, useLocalSearchParams } from "expo-router";
-import { useToastNotification } from "~/hooks/useToastNotification";
 import { errorLogOnDev } from "~/utils/log-helpers";
 import { useCreateSession, useUpdateSession } from "~/services/db/actions";
 import ArrowRightIcon from "~/components/svgs/ArrowRightIcon";
 import CustomButton from "~/components/buttons/CustomButton";
+import { toast } from "sonner-native";
 
 const FormSteps = [
   {
@@ -60,7 +60,6 @@ export default function AddSession(): React.JSX.Element {
     step4: {},
   });
   const [isLinkValid, setIsLinkValid] = useState(false);
-  const toastNotification = useToastNotification();
 
   const createSession = useCreateSession(),
     updateSession = useUpdateSession();
@@ -130,7 +129,7 @@ export default function AddSession(): React.JSX.Element {
       } else {
         await createSession.mutateAsync(dataToSave);
       }
-      toastNotification.success("Session saved successfully.");
+      toast.success("Session saved successfully.");
       router.back();
     } catch (error: any) {
       errorLogOnDev("\n\nsessionsDb.insert error :>> \t\t", error, "\n\n---");

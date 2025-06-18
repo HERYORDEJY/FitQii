@@ -12,12 +12,12 @@ import RadioButtonIcon from "~/components/svgs/RadioButtonIcon";
 import { differenceInMinutes, format } from "date-fns";
 import { convertMinutesToHourMinute, isValidDate } from "~/utils/date-helpers";
 import { ActionSheetRef } from "react-native-actions-sheet";
-import { useToastNotification } from "~/hooks/useToastNotification";
 import ViewSessionSheet from "~/components/session/ViewSessionSheet";
 import { useDeleteSession, useUpdateSession } from "~/services/db/actions";
 import { SessionItemDataType } from "~/components/session/types";
 import { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import { RepetitionOptions } from "~/data/add-session-options";
+import { toast } from "sonner-native";
 
 interface Props {
   item: SessionItemDataType;
@@ -130,7 +130,6 @@ export default function SessionsListItem(props: Props): React.JSX.Element {
   const isSessionUpcoming = props.item.status === "upcoming";
   const sheetRef = useRef<ActionSheetRef>(null);
   const reanimatedSwipeableRef = useRef<SwipeableMethods>(null);
-  const toastNotification = useToastNotification();
   const repetitionOption = RepetitionOptions.find(
     (option) => option.value === props.item.repetition,
   );
@@ -160,10 +159,10 @@ export default function SessionsListItem(props: Props): React.JSX.Element {
   const handleDelete = async () => {
     try {
       await deleteSession.mutateAsync(props.item.id);
-      toastNotification.success("Session deleted successfully.");
+      toast.success("Session deleted successfully.");
       props.onActionCompleted?.();
     } catch (error) {
-      toastNotification.error("Unable to delete session.");
+      toast.error("Unable to delete session.");
 
       throw error;
     }

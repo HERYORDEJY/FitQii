@@ -2,12 +2,12 @@ import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import "~/db";
-import { ToastNotificationProvider } from "~/contextAPI/toast-notification";
-import ToastNotification from "~/components/general/ToastNotification";
 import { SheetProvider } from "react-native-actions-sheet";
 import { QueryClient } from "@tanstack/query-core";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Toaster } from "sonner-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,15 +42,15 @@ function RootLayout() {
 
 export default function AppLayout() {
   return (
-    <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <SheetProvider>
-          <ToastNotificationProvider>
+    <GestureHandlerRootView>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <SheetProvider>
             <RootLayout />
-            <ToastNotification />
-          </ToastNotificationProvider>
-        </SheetProvider>
-      </QueryClientProvider>
-    </SafeAreaProvider>
+          </SheetProvider>
+          <Toaster />
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

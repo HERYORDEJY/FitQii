@@ -12,7 +12,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReanimatedSwipeable from "react-native-gesture-handler/src/components/ReanimatedSwipeable";
 import { SessionItemDataType } from "~/components/session/types";
 import { format } from "date-fns";
-import { useToastNotification } from "~/hooks/useToastNotification";
+import { toast } from "sonner-native";
 import ViewSessionSheet from "~/components/session/ViewSessionSheet";
 import { ActionSheetRef } from "react-native-actions-sheet";
 import { isValidDate } from "~/utils/date-helpers";
@@ -158,7 +158,6 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
   const isSessionPending = props.item.status === "pending";
   const sheetRef = useRef<ActionSheetRef>(null);
   const reanimatedSwipeableRef = useRef<SwipeableMethods>(null);
-  const toastNotification = useToastNotification();
 
   const deleteSession = useDeleteSession(),
     updateSession = useUpdateSession();
@@ -178,10 +177,10 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
   const handleDelete = async () => {
     try {
       await deleteSession.mutateAsync(props.item.id);
-      toastNotification.success("Session deleted successfully.");
+      toast.success("Session deleted successfully.");
       props.onActionCompleted?.();
     } catch (error) {
-      toastNotification.error("Unable to delete session.");
+      toast.error("Unable to delete session.");
 
       throw error;
     }
