@@ -46,8 +46,6 @@ export const useAllSessions = (
     queryFn: async () => {
       return await sessionsDbService.getAllSessions();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     ...options,
   });
 };
@@ -70,8 +68,6 @@ export const useSessionById = (
       return await sessionsDbService.getSessionById(sessionId);
     },
     enabled: !!sessionId && sessionId > 0,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
     ...options,
   });
 };
@@ -92,7 +88,6 @@ export const useTodaySessions = (
       return await sessionsDbService.getTodaySessions();
     },
     staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
-    gcTime: 5 * 60 * 1000,
     refetchInterval: 5 * 60 * 1000, // Auto-refetch every 5 minutes
     ...options,
   });
@@ -127,7 +122,6 @@ export const useWeeksSessions = (
       });
     },
     staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
-    gcTime: 5 * 60 * 1000,
     refetchInterval: 5 * 60 * 1000, // Auto-refetch every 5 minutes
     ...options,
   });
@@ -155,9 +149,6 @@ export const usePastSessions = (
     queryFn: async () => {
       return await sessionsDbService.getPastSessions(options?.searchQuery);
     },
-    staleTime: 2 * 60 * 1000, // 2 minutes (more frequent updates for today)
-    gcTime: 5 * 60 * 1000,
-    refetchInterval: 5 * 60 * 1000, // Auto-refetch every 5 minutes
     ...options,
   });
 };
@@ -181,8 +172,6 @@ export const useSessionsByDate = (
       return await sessionsDbService.getSessionsByDate(date);
     },
     enabled: !!date,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
     ...options,
   });
 };
@@ -208,8 +197,6 @@ export const useSessionsInRange = (
       return await sessionsDbService.getSessionsInRange(startDate, endDate);
     },
     enabled: !!startDate && !!endDate && startDate <= endDate,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
     ...options,
   });
 };
@@ -226,8 +213,6 @@ export const useSessionCount = (
     queryFn: async () => {
       return await sessionsDbService.getSessionCount();
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 15 * 60 * 1000,
     ...options,
   });
 };
