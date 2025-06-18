@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
 import SearchInput from "~/components/inputs/SearchInput";
+import { screenDimensions } from "~/utils/size-helpers";
 
 export interface CustomActionSheetContainerProps extends ActionSheetProps {
   sheetRef: RefObject<ActionSheetRef | null>;
@@ -81,7 +82,6 @@ function CustomActionSheetContainer({
         }}
         containerStyle={{
           ...styles.sheetContainer,
-
           backgroundColor: COLORS.background.card,
           ...props.style,
         }}
@@ -197,7 +197,10 @@ function CustomActionSheetItem({
         />
       </View>
       {typeof props.children === "string" ? (
-        <CustomText style={[styles.itemTitle, props.titleStyle]}>
+        <CustomText
+          style={[styles.itemTitle, props.titleStyle]}
+          numberOfLines={1}
+        >
           {props.children}
         </CustomText>
       ) : (
@@ -223,6 +226,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     rowGap: 8,
     overflow: "hidden",
+    maxHeight: screenDimensions.height * 0.8,
   },
   sheetHandleBar: {
     width: "100%",
@@ -293,6 +297,7 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 18,
+    flex: 1,
   },
   itemRadioCheck: {
     height: 16,

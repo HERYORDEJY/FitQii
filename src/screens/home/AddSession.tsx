@@ -110,12 +110,19 @@ export default function AddSession(): React.JSX.Element {
 
   const handleSaveSession = async () => {
     try {
-      const dataToSave = {
+      let dataToSave = {
         ...formData.step1,
         ...formData.step2,
         ...formData.step3,
         ...formData.step4,
       };
+      if (Boolean(dataToSave.attachments?.length)) {
+        dataToSave = {
+          ...dataToSave,
+          attachments: JSON.stringify(formData.step3.attachments),
+        };
+      }
+
       if (isEditMode) {
         await updateSession.mutateAsync({
           id: sessionData?.id ?? 3!,

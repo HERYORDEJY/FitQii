@@ -46,6 +46,9 @@ export default function ViewSessionSheet({
     `${sessionData?.location}`.match(urlRegex) ||
     `${sessionData?.location}`?.startsWith("https://") ||
     `${sessionData?.location}`?.startsWith("http://");
+  const attachments = Boolean(sessionData?.attachments)
+    ? JSON.parse(sessionData?.attachments as string)
+    : null;
 
   const deleteSession = useDeleteSession(),
     updateSession = useUpdateSession();
@@ -241,7 +244,7 @@ export default function ViewSessionSheet({
                 </CustomText>
               </View>
 
-              {Boolean(sessionData?.attachments?.length) ? (
+              {Boolean(attachments?.length) ? (
                 <View style={[styles.fieldGroup, { rowGap: 5 }]}>
                   <TouchableOpacity style={[styles.stepItemRow]}>
                     <AttachmentIcon />
@@ -249,7 +252,7 @@ export default function ViewSessionSheet({
                   </TouchableOpacity>
 
                   <View style={[styles.attachments]}>
-                    {sessionData?.attachments?.map(
+                    {attachments?.map(
                       (
                         attachment: DocumentPicker.DocumentPickerAsset,
                         index: number,

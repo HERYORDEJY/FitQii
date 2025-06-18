@@ -88,6 +88,7 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
             selectedOptionValue={props.formData?.timezone}
             containerStyle={{ flex: 1 }}
             selectTitle={"Select timezone"}
+            sheetContentContainerStyle={{ paddingBottom: 50 }}
           />
         </View>
 

@@ -1,7 +1,5 @@
-import { DocumentPickerAsset } from "expo-document-picker";
-
 export interface SessionItemDataType {
-  attachments: Array<DocumentPickerAsset> | null;
+  attachments: string | null;
   category: string;
   description: string | null;
   end_date: number;

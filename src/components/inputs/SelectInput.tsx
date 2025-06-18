@@ -2,9 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   ListRenderItem,
+  StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import CustomTextInput from "~/components/inputs/CustomTextInput";
 import {
@@ -12,10 +14,9 @@ import {
   SelectOptionType,
 } from "~/components/inputs/types";
 import ChevronDown from "~/components/svgs/ChevronDown";
-import { BottomSheetRef } from "~/components/general/types";
-import BottomSheet from "~/components/general/BottomSheet";
 import CustomText from "~/components/general/CustomText";
-import { COLORS } from "~/constants/Colors";
+import CustomActionSheet from "~/components/general/CustomActionSheet";
+import { ActionSheetRef } from "react-native-actions-sheet";
 
 type Props = CustomTextInputProps & {
   selectTitle?: string;
@@ -23,28 +24,27 @@ type Props = CustomTextInputProps & {
   disabled?: boolean;
   onSelectOption: (option: SelectOptionType) => void;
   selectedOptionValue: string;
+  sheetContentContainerStyle?: StyleProp<ViewStyle>;
 };
 
 export default function SelectInput(props: Props): React.JSX.Element {
   const [selectedOption, setSelectedOption] = useState<SelectOptionType | null>(
     null,
   );
-  const sheetRef = useRef<BottomSheetRef>(null);
+  const sheetRef = useRef<ActionSheetRef>(null);
   const isDisabled = props.disabled || !Boolean(props.options?.length);
   const keyExtractor = useCallback((item: any, index: number) => {
     return `${item?.id} - ${index}`;
   }, []);
 
   const handleOpenSelect = () => {
-    sheetRef.current?.open({
-      items: [...Array(10).keys()],
-    });
+    sheetRef.current?.show();
   };
 
   const handleSelectOption = (option: SelectOptionType) => {
     setSelectedOption(option);
     props.onSelectOption?.(option);
-    sheetRef.current?.close();
+    sheetRef.current?.hide();
   };
 
   const renderItem: ListRenderItem<SelectOptionType> = useCallback(
@@ -53,32 +53,14 @@ export default function SelectInput(props: Props): React.JSX.Element {
         selectedOption?.value === item.value &&
         selectedOption?.label === item.label;
       return (
-        <TouchableOpacity
+        <CustomActionSheet.Item
           key={`${item.id ?? item.value}-${index}`}
           onPress={() => handleSelectOption(item)}
-          style={[
-            styles.item,
-            // isSelected && {
-            //   borderLeftColor: COLORS.primary,
-            //   backgroundColor: COLORS.primary + "20",
-            // },
-          ]}
+          style={[styles.item]}
+          active={isSelected}
         >
-          <View
-            style={[
-              styles.itemRadioCheck,
-              isSelected && { borderColor: COLORS.secondary },
-            ]}
-          >
-            <View
-              style={[
-                styles.itemRadioCheckActive,
-                isSelected && { backgroundColor: COLORS.secondary },
-              ]}
-            />
-          </View>
-          <CustomText numberOfLines={1}>{item.label}</CustomText>
-        </TouchableOpacity>
+          {item.label}
+        </CustomActionSheet.Item>
       );
     },
     [props.selectedOptionValue],
@@ -113,23 +95,23 @@ export default function SelectInput(props: Props): React.JSX.Element {
         />
       </TouchableOpacity>
 
-      <BottomSheet ref={sheetRef} title={props.selectTitle ?? "Select"}>
-        {() => {
-          return (
-            <FlatList
-              data={props.options}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-              keyExtractor={keyExtractor}
-              contentContainerStyle={[styles.contentContainer]}
-              ItemSeparatorComponent={() => (
-                <View style={[styles.itemSeparator]} />
-              )}
-            />
-          );
-        }}
-      </BottomSheet>
+      <CustomActionSheet.Container
+        sheetRef={sheetRef}
+        title={props.selectTitle ?? "Select"}
+      >
+        <FlatList
+          data={props.options}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          keyExtractor={keyExtractor}
+          contentContainerStyle={[
+            styles.contentContainer,
+            props.sheetContentContainerStyle,
+          ]}
+          ItemSeparatorComponent={() => <View style={[styles.itemSeparator]} />}
+        />
+      </CustomActionSheet.Container>
     </>
   );
 }
@@ -139,17 +121,15 @@ const styles = StyleSheet.create({
     rowGap: 10,
   },
   item: {
-    height: 40,
+    // height: 40,
     flexDirection: "row",
     // borderLeftWidth: 6,
     // borderLeftColor: "transparent",
     alignItems: "center",
-    paddingHorizontal: 10,
     columnGap: 10,
   },
   contentContainer: {
     rowGap: 10,
-    paddingBottom: 150,
   },
   label: {},
   itemSeparator: {

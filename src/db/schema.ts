@@ -1,5 +1,4 @@
-import { blob, int, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { DocumentPickerAsset } from "expo-document-picker";
+import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
 export const sessionsSchema = sqliteTable("sessions_table", {
@@ -30,5 +29,5 @@ export const sessionsSchema = sqliteTable("sessions_table", {
   link: text(),
   location: text(),
   description: text(),
-  attachments: blob({ mode: "json" }).$type<Array<DocumentPickerAsset>>(),
+  attachments: text(),
 });
