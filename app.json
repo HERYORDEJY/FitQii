@@ -9,9 +9,11 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.heryordejy.app"
     },
     "android": {
+      "package": "dev.heryordejy.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -123,6 +125,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "92eace19-342f-41a1-99e3-2b657b5f429e"
+      }
+    },
+    "owner": "heryordejy"
   }
 }
