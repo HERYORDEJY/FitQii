@@ -81,7 +81,6 @@ export const ToastNotificationProvider = ({
       return show({
         type: "error",
         message,
-        duration: 5000, // Longer duration for errors
         ...options,
       });
     },

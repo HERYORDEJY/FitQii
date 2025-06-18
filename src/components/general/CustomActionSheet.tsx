@@ -17,7 +17,7 @@ import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
 import SearchInput from "~/components/inputs/SearchInput";
 
-export interface CustomBottomSheetContainerProps extends ActionSheetProps {
+export interface CustomActionSheetContainerProps extends ActionSheetProps {
   sheetRef: RefObject<ActionSheetRef | null>;
   title?: string;
   subtitle?: string;
@@ -36,20 +36,20 @@ export interface CustomBottomSheetContainerProps extends ActionSheetProps {
   style?: ViewStyle;
 }
 
-export interface CustomBottomSheetItemProps extends TouchableOpacityProps {
+export interface CustomActionSheetItemProps extends TouchableOpacityProps {
   active?: boolean;
   children: string | React.ReactNode;
   titleStyle?: TextStyle;
 }
 
-function CustomBottomSheetContainer({
+function CustomActionSheetContainer({
   showHeader = true,
   showSearch = false,
   headerAlwaysVisible = true,
   backgroundInteractionEnabled = false,
   selectIndicatorType = "radio",
   ...props
-}: CustomBottomSheetContainerProps): React.JSX.Element {
+}: CustomActionSheetContainerProps): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
 
   const handleDone = async () => {
@@ -57,7 +57,7 @@ function CustomBottomSheetContainer({
     props.sheetRef?.current?.hide();
   };
 
-  const handleCancel = async () => {
+  const handleClose = async () => {
     await props.onClose?.();
     props.sheetRef?.current?.hide();
   };
@@ -65,6 +65,7 @@ function CustomBottomSheetContainer({
   return (
     <View>
       <ActionSheet
+        testIDs={{ modal: "action-sheet-modal" }}
         {...props}
         overlayColor={"#000000"}
         defaultOverlayOpacity={0.7}
@@ -95,20 +96,28 @@ function CustomBottomSheetContainer({
           <View style={{}}>
             <View style={styles.header}>
               <View style={{ flex: 0.2 }}>
-                <TouchableOpacity onPress={handleCancel}>
+                <TouchableOpacity onPress={handleClose} testID="close-button">
                   <CustomText
                     fontFamily={"medium"}
                     style={[styles.done]}
                     color={COLORS.text.tertiary}
+                    testID={"close-button-text"}
                   >
                     {props.closeTitle ?? "Close"}
                   </CustomText>
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.titleWrapper}>
+              <View
+                style={styles.titleWrapper}
+                testID={"action-sheet-title-wrapper"}
+              >
                 {props.title ? (
-                  <CustomText fontFamily={"bold"} style={[styles.title]}>
+                  <CustomText
+                    fontFamily={"bold"}
+                    style={[styles.title]}
+                    testID={"action-sheet-title"}
+                  >
                     {props.title}
                   </CustomText>
                 ) : null}
@@ -117,11 +126,15 @@ function CustomBottomSheetContainer({
               <View style={{ flex: 0.2 }}>
                 {props.showDone
                   ? (props.renderDoneElement ?? (
-                      <TouchableOpacity onPress={handleDone}>
+                      <TouchableOpacity
+                        onPress={handleDone}
+                        testID={"done-button"}
+                      >
                         <CustomText
                           fontFamily={"medium"}
                           style={[styles.done]}
                           color={COLORS.primary}
+                          testID={"done-button-text"}
                         >
                           {props.doneTitle ?? "Done"}
                         </CustomText>
@@ -158,9 +171,9 @@ function CustomBottomSheetContainer({
   );
 }
 
-function CustomBottomSheetItem({
+function CustomActionSheetItem({
   ...props
-}: CustomBottomSheetItemProps): React.JSX.Element {
+}: CustomActionSheetItemProps): React.JSX.Element {
   const isSelected = props.active;
   const isDisabled = props.disabled;
 
@@ -301,12 +314,12 @@ const styles = StyleSheet.create({
 });
 
 type ComposedSheetComponent = typeof Component & {
-  Item: typeof CustomBottomSheetItem;
-  Container: typeof CustomBottomSheetContainer;
+  Item: typeof CustomActionSheetItem;
+  Container: typeof CustomActionSheetContainer;
 };
 
-const CustomBottomSheet = Component as ComposedSheetComponent;
-CustomBottomSheet.Item = CustomBottomSheetItem;
-CustomBottomSheet.Container = CustomBottomSheetContainer;
+const CustomActionSheet = Component as ComposedSheetComponent;
+CustomActionSheet.Item = CustomActionSheetItem;
+CustomActionSheet.Container = CustomActionSheetContainer;
 
-export default CustomBottomSheet;
+export default CustomActionSheet;

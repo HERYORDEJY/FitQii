@@ -7,6 +7,7 @@ import ToastNotification from "~/components/general/ToastNotification";
 import { SheetProvider } from "react-native-actions-sheet";
 import { QueryClient } from "@tanstack/query-core";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,13 +42,15 @@ function RootLayout() {
 
 export default function AppLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SheetProvider>
-        <ToastNotificationProvider>
-          <RootLayout />
-          <ToastNotification />
-        </ToastNotificationProvider>
-      </SheetProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <SheetProvider>
+          <ToastNotificationProvider>
+            <RootLayout />
+            <ToastNotification />
+          </ToastNotificationProvider>
+        </SheetProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }

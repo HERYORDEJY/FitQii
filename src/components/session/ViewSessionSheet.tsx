@@ -19,8 +19,8 @@ import AttachmentIcon from "~/components/svgs/AttachmentIcon";
 import * as DocumentPicker from "expo-document-picker";
 import { SessionItemDataType } from "~/components/session/types";
 import { useToastNotification } from "~/hooks/useToastNotification";
-import CustomBottomSheet, {
-  CustomBottomSheetContainerProps,
+import CustomActionSheet, {
+  CustomActionSheetContainerProps,
 } from "~/components/general/CustomActionSheet";
 import CustomActivityIndicator from "~/components/general/CustomActivityIndicator";
 import { isValidDate } from "~/utils/date-helpers";
@@ -29,7 +29,7 @@ import { useDeleteSession, useUpdateSession } from "~/services/db/actions";
 import PrimaryButton from "~/components/buttons/PrimaryButton";
 import SecondaryButton from "~/components/buttons/SecondaryButton";
 
-interface Props extends CustomBottomSheetContainerProps {
+interface Props extends CustomActionSheetContainerProps {
   sessionData?: SessionItemDataType;
   showStatus?: boolean;
 }
@@ -117,7 +117,7 @@ export default function ViewSessionSheet({
 
   return (
     <>
-      <CustomBottomSheet.Container
+      <CustomActionSheet.Container
         sheetRef={props.sheetRef}
         title={"View Session"}
       >
@@ -297,7 +297,7 @@ export default function ViewSessionSheet({
             overlayBackgroundType={"blurred"}
           />
         ) : null}
-      </CustomBottomSheet.Container>
+      </CustomActionSheet.Container>
     </>
   );
 }
