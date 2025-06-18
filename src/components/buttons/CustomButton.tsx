@@ -13,6 +13,7 @@ import { COLORS } from "~/constants/Colors";
 import CustomText from "~/components/general/CustomText";
 
 interface Props extends TouchableOpacityProps {
+  type?: "primary" | "secondary";
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   titleStyle?: TextStyle;
@@ -22,7 +23,11 @@ interface Props extends TouchableOpacityProps {
   children?: string | React.ReactElement;
 }
 
-export default function SecondaryButton(props: Props): React.JSX.Element {
+export default function CustomButton({
+  type = "primary",
+  ...props
+}: Props): React.JSX.Element {
+  const isPrimaryType = type === "primary";
   return (
     <TouchableOpacity
       activeOpacity={0.85}
@@ -32,6 +37,12 @@ export default function SecondaryButton(props: Props): React.JSX.Element {
         {
           opacity: props.disabled ? 0.2 : 1,
         },
+        isPrimaryType && {
+          backgroundColor: props.loading
+            ? `${COLORS.primary}65`
+            : COLORS.primary,
+        },
+        !isPrimaryType && { borderColor: COLORS.outline.card, borderWidth: 2 },
         props.style,
       ]}
       disabled={props.disabled || props.loading}
@@ -42,7 +53,7 @@ export default function SecondaryButton(props: Props): React.JSX.Element {
         <>
           {props?.leftElement ? <View>{props?.leftElement}</View> : null}
           <CustomText
-            color={COLORS.primary}
+            color={isPrimaryType ? COLORS.background.screen : COLORS.primary}
             fontFamily={"bold"}
             fontSize={props.titleStyle?.fontSize ?? 16}
             style={[props.titleStyle]}
@@ -59,11 +70,8 @@ export default function SecondaryButton(props: Props): React.JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "transparent",
     paddingHorizontal: 40,
     paddingVertical: 10,
     borderRadius: 10,
-    borderColor: COLORS.outline.card,
-    borderWidth: 2,
   },
 });

@@ -21,8 +21,7 @@ import { useToastNotification } from "~/hooks/useToastNotification";
 import { errorLogOnDev } from "~/utils/log-helpers";
 import { useCreateSession, useUpdateSession } from "~/services/db/actions";
 import ArrowRightIcon from "~/components/svgs/ArrowRightIcon";
-import PrimaryButton from "~/components/buttons/PrimaryButton";
-import SecondaryButton from "~/components/buttons/SecondaryButton";
+import CustomButton from "~/components/buttons/CustomButton";
 
 const FormSteps = [
   {
@@ -249,12 +248,12 @@ export default function AddSession(): React.JSX.Element {
       </Animated.ScrollView>
 
       <View style={[styles.footer]}>
-        <SecondaryButton onPress={handlePrev}>
+        <CustomButton type={"secondary"} onPress={handlePrev}>
           {currentStep === 1 ? "Cancel" : "Prev"}
-        </SecondaryButton>
-        <PrimaryButton onPress={handleNext} disabled={!canGoNext}>
+        </CustomButton>
+        <CustomButton onPress={handleNext} disabled={!canGoNext}>
           {currentStep === FormSteps.length ? "Save" : "Next"}
-        </PrimaryButton>
+        </CustomButton>
       </View>
     </CustomScreenContainer>
   );
