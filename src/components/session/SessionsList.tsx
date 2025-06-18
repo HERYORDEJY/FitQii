@@ -136,7 +136,7 @@ export default function SessionsList(props: Props): React.JSX.Element {
         >
           {Boolean(props.searchQuery)
             ? "No session meets search query"
-            : "No sessions available for today."}
+            : "No sessions available for the week."}
         </CustomText>
       </View>
     );
@@ -159,18 +159,9 @@ export default function SessionsList(props: Props): React.JSX.Element {
     !Boolean(props.headerHeight)
   ) {
     return (
-      <View style={{ flex: 1 }}>
-        <CustomActivityIndicator
-          position={"overlay"}
-          overlayBackgroundType={"blurred"}
-        />
-        <CustomText
-          style={{ textAlign: "center", marginTop: 20 }}
-          color={COLORS.text.secondary}
-        >
-          Loading sessions...
-        </CustomText>
-      </View>
+      <>
+        <CustomActivityIndicator />
+      </>
     );
   }
 

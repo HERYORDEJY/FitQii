@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomScreenContainer from "~/components/general/CustomScreenContainer";
 import FitQiiLogoIcon1 from "~/components/svgs/FitQiiLogoIcon1";
@@ -10,25 +10,11 @@ import TodaySessionList from "~/components/session/TodaySessionList";
 import PlusIcon from "~/components/svgs/PlusIcon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { sessionsDb } from "~/db";
-import { sessionsSchema } from "~/db/schema";
-import { gt } from "drizzle-orm";
-import { errorLogOnDev, logOnDev } from "~/utils/log-helpers";
 
 export default function Home(): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const TAB_BAR_HEIGHT = 69 + safeAreaInsets.bottom / 2;
   const [searchQuery, setSearchQuery] = useState("");
-
-  // TODO:: delete all sessions function
-  const deleteAllSessions = async () => {
-    try {
-      await sessionsDb.delete(sessionsSchema).where(gt(sessionsSchema.id, 0));
-      logOnDev("\n\n All sessions deleted successfully \n\n");
-    } catch (error) {
-      errorLogOnDev("Error deleting all sessions:", error);
-    }
-  };
 
   const handleAddSession = async () => {
     router.push("/add-session");
@@ -37,11 +23,6 @@ export default function Home(): React.JSX.Element {
   const handleSearchSession = (searchText: string) => {
     setSearchQuery(searchText);
   };
-
-  // TODO:: remove this useEffect when you want to delete all sessions
-  useEffect(() => {
-    // deleteAllSessions();
-  }, []);
 
   return (
     <>

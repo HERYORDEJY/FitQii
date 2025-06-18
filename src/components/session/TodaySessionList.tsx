@@ -138,9 +138,9 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
     todaySessionsQuery?.isLoading
   ) {
     return (
-      <View testID={"activity-indicator-container"}>
+      <>
         <CustomActivityIndicator />
-      </View>
+      </>
     );
   }
 

@@ -23,7 +23,7 @@ class SessionDatabaseService {
     this.db = database;
     this.schema = schema;
 
-    this.diagnoseDateStorage();
+    // this.diagnoseDateStorage();
   }
 
   /**
@@ -299,44 +299,65 @@ class SessionDatabaseService {
       const firstSessionInDb = await this.getFirstSessionsInDb();
       const result: Array<{ title: Date; data: Array<SessionItemDataType> }> =
         [];
-      const { weekDates } = getWeekDates();
       const datesFromReferenceTillNowModern =
         getDatesFromReferenceTillNowModern(
           new Date(firstSessionInDb.start_date),
         );
 
-      for (const date of datesFromReferenceTillNowModern) {
+      // Get today's start (midnight)
+      const today = new Date();
+      const todayStart = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        0,
+        0,
+        0,
+        0,
+      ).getTime();
+
+      // Only include days strictly before today
+      const pastDates = datesFromReferenceTillNowModern.filter((date) => {
+        const dayStart = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          0,
+          0,
+          0,
+          0,
+        ).getTime();
+        return dayStart < todayStart;
+      });
+
+      for (const date of pastDates) {
         const title = new Date(
-          new Date(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            0,
-            0,
-            0,
-            0,
-          ),
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          0,
+          0,
+          0,
+          0,
         );
-        // const data = [];
-        const now = new Date(date),
-          nowStart = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            0,
-            0,
-            0,
-            0,
-          ).getTime(),
-          nowEnd = new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate(),
-            23,
-            59,
-            59,
-            999,
-          ).getTime();
+        const nowStart = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          0,
+          0,
+          0,
+          0,
+        ).getTime();
+        const nowEnd = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          23,
+          59,
+          59,
+          999,
+        ).getTime();
         const wildcardSearchQuery = `%${searchQuery?.toLowerCase()}%`;
         const data = (await this.db
           .select()

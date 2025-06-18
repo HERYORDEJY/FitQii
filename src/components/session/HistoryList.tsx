@@ -18,7 +18,7 @@ import { COLORS } from "~/constants/Colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SessionItemDataType } from "~/components/session/types";
 import { errorLogOnDev } from "~/utils/log-helpers";
-import { usePastSessions, useWeeksSessions } from "~/services/db/actions";
+import { usePastSessions } from "~/services/db/actions";
 import CustomActivityIndicator from "~/components/general/CustomActivityIndicator";
 import HistoryListItem from "~/components/session/HistoryListItem";
 
@@ -39,10 +39,6 @@ export default function HistoryList(props: Props): React.JSX.Element {
   const sectionListRef = useRef<SectionList<SessionItemDataType>>(null);
   const [itemHeight, setItemHeight] = useState(0);
 
-  const weeksSessionsQuery = useWeeksSessions({
-    searchQuery: props.searchQuery,
-  });
-
   const pastSessionsQuery = usePastSessions({
     searchQuery: props.searchQuery,
   });
@@ -60,7 +56,7 @@ export default function HistoryList(props: Props): React.JSX.Element {
 
   const handleRefreshList = async () => {
     try {
-      // await weeksSessionsQuery.refetch();
+      await pastSessionsQuery.refetch();
     } catch (error) {
       errorLogOnDev("Error refreshing sessions list:", error);
     }
@@ -127,7 +123,7 @@ export default function HistoryList(props: Props): React.JSX.Element {
         >
           {Boolean(props.searchQuery)
             ? "No session meets search query"
-            : "No sessions available for today."}
+            : "No past sessions recorded."}
         </CustomText>
       </View>
     );
@@ -145,23 +141,14 @@ export default function HistoryList(props: Props): React.JSX.Element {
   }, [props.selectedDate]);
 
   if (
-    (!Boolean(weeksSessionsQuery?.data?.length) &&
-      weeksSessionsQuery?.isLoading) ||
+    (!Boolean(pastSessionsQuery?.data?.length) &&
+      pastSessionsQuery?.isLoading) ||
     !Boolean(props.headerHeight)
   ) {
     return (
-      <View style={{ flex: 1 }}>
-        <CustomActivityIndicator
-          position={"overlay"}
-          overlayBackgroundType={"blurred"}
-        />
-        <CustomText
-          style={{ textAlign: "center", marginTop: 20 }}
-          color={COLORS.text.secondary}
-        >
-          Loading sessions...
-        </CustomText>
-      </View>
+      <>
+        <CustomActivityIndicator />
+      </>
     );
   }
 
@@ -189,7 +176,7 @@ export default function HistoryList(props: Props): React.JSX.Element {
       refreshControl={
         <RefreshControl
           onRefresh={handleRefreshList}
-          refreshing={weeksSessionsQuery.isRefetching}
+          refreshing={pastSessionsQuery.isRefetching}
         />
       }
     />
