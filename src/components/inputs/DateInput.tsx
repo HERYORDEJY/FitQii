@@ -9,7 +9,6 @@ import { COLORS } from "~/constants/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { format, isValid } from "date-fns";
-import { useBooleanValue } from "~/hooks/useBooleanValue";
 import CalendarIcon from "~/components/svgs/CalendarIcon";
 
 type Props = CustomTextInputProps & {
@@ -26,8 +25,7 @@ export default function DateInput(props: Props): React.JSX.Element {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const sheetRef = useRef<BottomSheetRef>(null);
   const isDisabled = props.disabled;
-
-  const showAndroidPicker = useBooleanValue(false);
+  const [showAndroidPicker, setShowAndroidPicker] = useState(false);
 
   const handleConfirmPick = () => {
     props.onSelectDate?.(selectedDate!);
@@ -46,20 +44,20 @@ export default function DateInput(props: Props): React.JSX.Element {
       });
       return;
     }
-    showAndroidPicker.setTrueValue();
+    setShowAndroidPicker(true);
     return;
   };
 
   const handlePickerChange = (event: any, date: any) => {
     if (event.type === "dismissed") {
-      showAndroidPicker.setFalseValue();
+      setShowAndroidPicker(false);
       return;
     }
 
     if (Platform.OS === "android") {
       setSelectedDate(date);
       props.onSelectDate?.(date);
-      showAndroidPicker.setFalseValue();
+      setShowAndroidPicker(false);
       return;
     }
 
@@ -120,7 +118,7 @@ export default function DateInput(props: Props): React.JSX.Element {
         />
       </TouchableOpacity>
 
-      {showAndroidPicker.value ? <View>{renderPicker()}</View> : null}
+      {showAndroidPicker ? <View>{renderPicker()}</View> : null}
 
       <BottomSheet
         ref={sheetRef}

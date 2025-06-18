@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomTextInput from "~/components/inputs/CustomTextInput";
 import { CustomTextInputProps } from "~/components/inputs/types";
@@ -9,7 +9,6 @@ import { COLORS } from "~/constants/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { format, isValid } from "date-fns";
-import { useBooleanValue } from "~/hooks/useBooleanValue";
 import AlarmClockIcon from "~/components/svgs/AlarmClockIcon";
 
 type Props = CustomTextInputProps & {
@@ -26,10 +25,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const sheetRef = useRef<BottomSheetRef>(null);
   const isDisabled = props.disabled;
-  const keyExtractor = useCallback((item: any, index: number) => {
-    return `${item?.id} - ${index}`;
-  }, []);
-  const showAndroidPicker = useBooleanValue(false);
+  const [showAndroidPicker, setShowAndroidPicker] = useState(false);
 
   const handleConfirmPick = () => {
     props.onSelectDate?.(selectedDate!);
@@ -48,20 +44,20 @@ export default function TimeInput(props: Props): React.JSX.Element {
       });
       return;
     }
-    showAndroidPicker.setTrueValue();
+    setShowAndroidPicker(true);
     return;
   };
 
   const handlePickerChange = (event: any, date: any) => {
     if (event.type === "dismissed") {
-      showAndroidPicker.setFalseValue();
+      setShowAndroidPicker(false);
       return;
     }
 
     if (Platform.OS === "android") {
       setSelectedDate(date);
       props.onSelectDate?.(date);
-      showAndroidPicker.setFalseValue();
+      setShowAndroidPicker(false);
       return;
     }
 
@@ -122,7 +118,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
         />
       </TouchableOpacity>
 
-      {showAndroidPicker.value ? <View>{renderPicker()}</View> : null}
+      {showAndroidPicker ? <View>{renderPicker()}</View> : null}
 
       <BottomSheet
         ref={sheetRef}
