@@ -22,13 +22,20 @@ interface Props extends CustomTextInputProps {
 
 export default function CustomTextInput(props: Props): React.JSX.Element {
   return (
-    <View style={[styles.container, props.containerStyle]}>
+    <View
+      testID={"input-container"}
+      style={[styles.container, props.containerStyle]}
+    >
       {props.label ? (
         <CustomText style={[styles.label]}>{props.label}</CustomText>
       ) : null}
-      <View style={[styles.contentContainer, props.contentContainerStyle]}>
+      <View
+        testID={"input-content-container"}
+        style={[styles.contentContainer, props.contentContainerStyle]}
+      >
         {props.renderLeftElement}
         <TextInput
+          testID={"text-input"}
           {...props}
           style={[styles.textInput, props.textInputStyle]}
           placeholderTextColor={COLORS.text.tertiary}

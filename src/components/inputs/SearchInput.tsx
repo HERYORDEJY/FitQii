@@ -10,8 +10,10 @@ export default function SearchInput(props: Props): React.JSX.Element {
   return (
     <CustomTextInput
       {...props}
+      containerStyle={props.containerStyle}
+      contentContainerStyle={props.contentContainerStyle}
       placeholder={props.placeholder ?? "Search here"}
-      renderLeftElement={<SearchIcon />}
+      renderLeftElement={<SearchIcon testID={"search-input-icon"} />}
     />
   );
 }

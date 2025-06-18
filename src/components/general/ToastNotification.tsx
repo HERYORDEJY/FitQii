@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
-  Dimensions,
   Platform,
   StatusBar,
   StyleSheet,
@@ -20,8 +19,6 @@ interface Props {
   toast: ToastNotificationDataType;
   onHide: (id: string) => void;
 }
-
-const { width: screenWidth } = Dimensions.get("window");
 
 const getDefaultIcon = (type: ToastNotificationIndicationType): string => {
   const icons: Record<ToastNotificationIndicationType, string> = {
