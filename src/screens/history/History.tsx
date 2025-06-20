@@ -10,10 +10,6 @@ export default function History(): React.JSX.Element {
   const [headerHeight, setHeaderHeight] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearchSession = () => {
-    // TODO:: implement search for session
-  };
-
   return (
     <CustomScreenContainer>
       {/*  Header */}
