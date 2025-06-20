@@ -113,11 +113,12 @@ export default function TodaySessionList(props: Props): React.JSX.Element {
           }}
           color={COLORS.text.secondary}
         >
-          Migration error: {sessionsDbMigrations.error?.message}
+          Migration error: {sessionsDbMigrations.error.message}
         </CustomText>
       </View>
     );
   }
+
   if (!sessionsDbMigrations.success) {
     return (
       <View>

@@ -225,18 +225,18 @@ export default function TodaySessionListItem(props: Props): React.JSX.Element {
             >
               <>
                 {isSessionDone ? (
-                  <CustomText>✅</CustomText>
+                  <CustomText testID={"item-status-indicator"}>✅</CustomText>
                 ) : isSessionActive ? (
-                  <CustomText>🏃</CustomText>
+                  <CustomText testID={"item-status-indicator"}>🏃</CustomText>
                 ) : isSessionUpcoming ? (
-                  <CustomText>⌛️</CustomText>
+                  <CustomText testID={"item-status-indicator"}>⌛️</CustomText>
                 ) : (
-                  <CustomText>⚠️</CustomText>
+                  <CustomText testID={"item-status-indicator"}>⚠️</CustomText>
                 )}
               </>
               <View style={styles.body}>
                 <View style={[styles.nameWrapper]}>
-                  <CustomText fontFamily={"medium"}>
+                  <CustomText fontFamily={"medium"} testID={"item-name"}>
                     {props.item?.name}
                   </CustomText>
                   {isSessionCancelled ? (

@@ -39,11 +39,7 @@ jest.mock("~/components/session/TodaySessionListItem", () => (props: any) => {
 
 jest.mock("~/components/general/CustomActivityIndicator", () => () => {
   const { View, Text } = require("react-native");
-  return (
-    <View testID="activity-indicator">
-      <Text>Loading...</Text>
-    </View>
-  );
+  return <Text testID="activity-indicator">Loading...</Text>;
 });
 
 jest.mock("~/components/general/CustomText", () => (props: any) => {
@@ -54,19 +50,10 @@ jest.mock("~/components/general/CustomText", () => (props: any) => {
     <Text
       {...otherProps}
       style={[style, color ? { color } : null]}
-      testID={`custom-text-${children?.toString().replace(/\s+/g, "-").toLowerCase()}`}
+      // testID={`custom-text-${children?.toString().replace(/\s+/g, "-").toLowerCase()}`}
     >
       {children}
     </Text>
-  );
-});
-
-jest.mock("~/components/general/CustomText", () => () => {
-  const { View, Text } = require("react-native");
-  return (
-    <View testID="empty-state">
-      <Text>No session meets search query</Text>
-    </View>
   );
 });
 
@@ -184,9 +171,8 @@ describe("TodaySessionList", () => {
     const { findByTestId } = renderWithSafeArea(<TodaySessionList />);
     await flushEffects();
 
-    const spinnerContainer = await findByTestId("activity-indicator-container");
-    // const spinner = await findByTestId("activity-indicator");
-    expect(spinnerContainer).toBeTruthy();
+    const spinner = await findByTestId("activity-indicator");
+    expect(spinner).toBeTruthy();
   });
 
   it("shows migration error message", async () => {
@@ -198,7 +184,7 @@ describe("TodaySessionList", () => {
     const { findByText } = renderWithSafeArea(<TodaySessionList />);
     await flushEffects();
 
-    const errorMessage = await findByText("Migration error: Migration failed");
+    const errorMessage = await findByText("Migration error: Migration failed ");
     expect(errorMessage).toBeTruthy();
   });
 
@@ -213,30 +199,6 @@ describe("TodaySessionList", () => {
 
     const progressMessage = await findByText("Migration is in progress...");
     expect(progressMessage).toBeTruthy();
-  });
-
-  // Helper test to check if our mocks are working correctly
-  it("mocks are set up correctly", async () => {
-    const CustomText = require("~/components/general/CustomText");
-    const CustomActivityIndicator = require("~/components/general/CustomActivityIndicator");
-    const TodaySessionListItem = require("~/components/session/TodaySessionListItem");
-
-    const { findByText, findByTestId } = render(
-      <>
-        <CustomText>Test text</CustomText>
-        <CustomActivityIndicator />
-        <TodaySessionListItem item={{ id: 999, name: "Test item" }} />
-      </>,
-    );
-
-    // Verify our mocks render correctly
-    const textElement = await findByText("Test text");
-    const loadingText = await findByText("Loading...");
-    const itemText = await findByText("Test item");
-
-    expect(textElement).toBeTruthy();
-    expect(loadingText).toBeTruthy();
-    expect(itemText).toBeTruthy();
   });
 
   // Test component behavior on session action

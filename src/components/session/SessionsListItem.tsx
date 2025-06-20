@@ -18,6 +18,7 @@ import { SessionItemDataType } from "~/components/session/types";
 import { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import { RepetitionOptions } from "~/data/add-session-options";
 import { toast } from "sonner-native";
+import CustomActivityIndicator from "~/components/general/CustomActivityIndicator";
 
 interface Props {
   item: SessionItemDataType;
@@ -265,6 +266,15 @@ export default function SessionsListItem(props: Props): React.JSX.Element {
           </TouchableOpacity>
         </ReanimatedSwipeable>
       </GestureHandlerRootView>
+
+      {updateSession.status === "loading" ||
+      deleteSession.status === "loading" ? (
+        <CustomActivityIndicator
+          position={"overlay"}
+          overlayBackgroundType={"blurred"}
+          size={"small"}
+        />
+      ) : null}
 
       <ViewSessionSheet
         sheetRef={sheetRef}

@@ -1,8 +1,9 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import TodaySessionListItem from "../TodaySessionListItem";
-import { format } from "date-fns";
+import { differenceInMinutes, format } from "date-fns";
 import { SessionItemDataType } from "~/components/session/types";
+import SessionsListItem from "~/components/session/SessionsListItem";
+import { convertMinutesToHourMinute } from "~/utils/date-helpers";
 
 jest.mock("~/services/db/actions", () => ({
   useDeleteSession: jest.fn(() => ({
@@ -54,30 +55,39 @@ const session: SessionItemDataType = {
   status_at: null,
 };
 
-describe("TodaySessionListItem", () => {
+describe("SessionsListItem", () => {
   it("renders session name and status icon", () => {
     const { getByText, getByTestId } = render(
-      <TodaySessionListItem item={session} />,
+      <SessionsListItem item={session} />,
     );
     screen.debug();
-    expect(getByTestId("item-name")).toBeTruthy();
     expect(getByText("Deep Work")).toBeTruthy();
-    expect(getByText("⌛️")).toBeTruthy();
   });
 
   it("calls onSelectedItem when tapped", () => {
     const mockFn = jest.fn();
     const { getByText } = render(
-      <TodaySessionListItem item={session} onSelectedItem={mockFn} />,
+      <SessionsListItem item={session} onSelectedItem={mockFn} />,
     );
     fireEvent.press(getByText("Deep Work"));
     expect(mockFn).toHaveBeenCalledWith(session);
   });
 
   it("renders formatted start and end times", () => {
-    const { getByText } = render(<TodaySessionListItem item={session} />);
-    expect(getByText(format(session.start_time, "h:mm a"))).toBeTruthy();
-    expect(getByText(format(session.end_time, "h:mm a"))).toBeTruthy();
+    const minutesToHourMinutes = convertMinutesToHourMinute(
+      differenceInMinutes(
+        new Date(session.end_time),
+        new Date(session.start_time),
+      ),
+    );
+
+    const { getByText } = render(<SessionsListItem item={session} />);
+    expect(getByText(format(session.start_time, "hh:mm a"))).toBeTruthy();
+    expect(
+      getByText(
+        `${minutesToHourMinutes?.hours} hr ${minutesToHourMinutes?.minutes} min`,
+      ),
+    ).toBeTruthy();
   });
 
   it("shows loading indicator when mutation is in progress", () => {
@@ -93,7 +103,7 @@ describe("TodaySessionListItem", () => {
       status: "idle",
     });
 
-    const { getByText } = render(<TodaySessionListItem item={session} />);
+    const { getByText } = render(<SessionsListItem item={session} />);
     expect(getByText("Loading...")).toBeTruthy();
   });
 
@@ -107,7 +117,7 @@ describe("TodaySessionListItem", () => {
       status: "idle",
     });
 
-    render(<TodaySessionListItem item={session} />);
+    render(<SessionsListItem item={session} />);
 
     await deleteMock();
 
@@ -125,7 +135,7 @@ describe("TodaySessionListItem", () => {
       status: "idle",
     });
 
-    render(<TodaySessionListItem item={session} />);
+    render(<SessionsListItem item={session} />);
 
     await deleteMock().catch(() => {});
 

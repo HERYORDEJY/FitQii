@@ -23,6 +23,7 @@ export default function CustomText(props: Props): React.JSX.Element {
   return (
     <Text
       {...props}
+      testID={props.testID}
       style={[
         styles.container,
         {
@@ -33,7 +34,9 @@ export default function CustomText(props: Props): React.JSX.Element {
         },
         props.style,
       ]}
-    />
+    >
+      {props.children}
+    </Text>
   );
 }
 

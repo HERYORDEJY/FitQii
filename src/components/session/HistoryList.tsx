@@ -211,5 +211,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-const sections = [] as Array<any>; // TODO:: remove

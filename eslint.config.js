@@ -19,6 +19,19 @@ module.exports = defineConfig([
     },
     rules: {
       "@typescript-eslint/array-type": ["error", { default: "generic" }],
+      "@typescript-eslint/no-var-requires": "off",
     },
+  },
+  {
+    overrides: [
+      {
+        // Test files only
+        files: [
+          "**/__tests__/**/*.[jt]s?(x)",
+          "**/?(*.)+(spec|test).[jt]s?(x)",
+        ],
+        extends: ["plugin:testing-library/react"],
+      },
+    ],
   },
 ]);
