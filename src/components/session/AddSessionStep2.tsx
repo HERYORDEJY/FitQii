@@ -56,8 +56,8 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
           <CustomText>Timing of Session</CustomText>
           <View style={[styles.dateFieldsRow]}>
             <TimeInput
-              onSelectDate={(date) => handleEnterData("start_time", date)}
-              selectedDate={props.formData?.start_time}
+              onSelectTime={(date) => handleEnterData("start_time", date)}
+              selectedTime={props.formData?.start_time}
               containerStyle={{ flex: 1 }}
             />
             <ArrowRightIcon
@@ -66,8 +66,8 @@ export default function AddSessionStep2(props: Props): React.JSX.Element {
               color={COLORS.text.tertiary}
             />
             <TimeInput
-              onSelectDate={(date) => handleEnterData("end_time", date)}
-              selectedDate={props.formData?.end_time}
+              onSelectTime={(date) => handleEnterData("end_time", date)}
+              selectedTime={props.formData?.end_time}
               containerStyle={{ flex: 1 }}
               minimumDate={
                 isAfter(new Date(), props.formData?.start_time)

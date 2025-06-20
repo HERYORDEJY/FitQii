@@ -2,20 +2,20 @@ import React, { useRef, useState } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import CustomTextInput from "~/components/inputs/CustomTextInput";
 import { CustomTextInputProps } from "~/components/inputs/types";
-import { BottomSheetRef } from "~/components/general/types";
-import BottomSheet from "~/components/general/BottomSheet";
 import CustomText from "~/components/general/CustomText";
 import { COLORS } from "~/constants/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { format, isValid } from "date-fns";
 import AlarmClockIcon from "~/components/svgs/AlarmClockIcon";
+import CustomActionSheet from "~/components/general/CustomActionSheet";
+import { ActionSheetRef } from "react-native-actions-sheet";
 
 type Props = CustomTextInputProps & {
   selectTitle?: string;
   disabled?: boolean;
-  onSelectDate: (date: Date) => void;
-  selectedDate: Date;
+  onSelectTime: (date: Date) => void;
+  selectedTime: Date;
   minimumDate?: Date;
   maximumDate?: Date;
 };
@@ -23,25 +23,23 @@ type Props = CustomTextInputProps & {
 export default function TimeInput(props: Props): React.JSX.Element {
   const safeAreaInsets = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const sheetRef = useRef<BottomSheetRef>(null);
+  const sheetRef = useRef<ActionSheetRef>(null);
   const isDisabled = props.disabled;
   const [showAndroidPicker, setShowAndroidPicker] = useState(false);
 
   const handleConfirmPick = () => {
-    props.onSelectDate?.(selectedDate!);
-    sheetRef.current?.close();
+    props.onSelectTime?.(selectedDate!);
+    sheetRef.current?.hide();
   };
 
   const handleCancelPick = () => {
-    sheetRef.current?.close();
+    sheetRef.current?.hide();
   };
 
   const handleOpenSelect = () => {
-    setSelectedDate(props.selectedDate ?? props.minimumDate ?? new Date());
+    setSelectedDate(props.selectedTime ?? props.minimumDate ?? new Date());
     if (Platform.OS === "ios") {
-      sheetRef.current?.open({
-        items: [...Array(10).keys()],
-      });
+      sheetRef.current?.show();
       return;
     }
     setShowAndroidPicker(true);
@@ -56,7 +54,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
 
     if (Platform.OS === "android") {
       setSelectedDate(date);
-      props.onSelectDate?.(date);
+      props.onSelectTime?.(date);
       setShowAndroidPicker(false);
       return;
     }
@@ -76,7 +74,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
         maximumDate={
           props.maximumDate ? new Date(props.maximumDate) : undefined
         }
-        value={props.selectedDate ?? selectedDate!}
+        value={props.selectedTime ?? selectedDate!}
         mode={"time"}
         display={"spinner"}
         accentColor={COLORS.primary}
@@ -99,6 +97,7 @@ export default function TimeInput(props: Props): React.JSX.Element {
         onPress={handleOpenSelect}
         disabled={isDisabled}
         style={styles.container}
+        testID={"time-input-container"}
       >
         {props.label ? (
           <CustomText style={[styles.label]}>{props.label}</CustomText>
@@ -108,8 +107,8 @@ export default function TimeInput(props: Props): React.JSX.Element {
           renderRightElement={<AlarmClockIcon />}
           pointerEvents={"none"}
           value={
-            isValid(props.selectedDate)
-              ? format(props.selectedDate!, "hh:mm a")
+            isValid(props.selectedTime)
+              ? format(props.selectedTime!, "hh:mm a")
               : undefined
           }
           label={undefined}
@@ -118,49 +117,49 @@ export default function TimeInput(props: Props): React.JSX.Element {
         />
       </TouchableOpacity>
 
-      {showAndroidPicker ? <View>{renderPicker()}</View> : null}
+      {showAndroidPicker ? (
+        <View testID="android-picker-wrapper">{renderPicker()}</View>
+      ) : null}
 
-      <BottomSheet
-        ref={sheetRef}
+      <CustomActionSheet.Container
+        sheetRef={sheetRef}
         title={props.selectTitle ?? "Select"}
         showHeader={false}
       >
-        {() => {
-          return (
-            <View
-              style={[
-                styles.pickerWrapper,
-                { paddingBottom: safeAreaInsets.bottom },
-              ]}
-            >
-              <>{renderPicker()}</>
+        <View
+          style={[
+            styles.pickerWrapper,
+            { paddingBottom: safeAreaInsets.bottom },
+          ]}
+        >
+          {Platform.OS === "ios" ? (
+            <View testID="ios-picker-wrapper">{renderPicker()}</View>
+          ) : null}
 
-              <View style={[styles.pickerButtons]}>
-                <TouchableOpacity
-                  style={[styles.cancelButton]}
-                  onPress={handleCancelPick}
-                >
-                  <CustomText color={"#FFF"} fontSize={16} fontFamily="bold">
-                    Cancel
-                  </CustomText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.confirmButton]}
-                  onPress={handleConfirmPick}
-                >
-                  <CustomText
-                    color={COLORS.background.screen}
-                    fontSize={16}
-                    fontFamily="bold"
-                  >
-                    Confirm
-                  </CustomText>
-                </TouchableOpacity>
-              </View>
-            </View>
-          );
-        }}
-      </BottomSheet>
+          <View style={[styles.pickerButtons]}>
+            <TouchableOpacity
+              style={[styles.cancelButton]}
+              onPress={handleCancelPick}
+            >
+              <CustomText color={"#FFF"} fontSize={16} fontFamily="bold">
+                Cancel
+              </CustomText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.confirmButton]}
+              onPress={handleConfirmPick}
+            >
+              <CustomText
+                color={COLORS.background.screen}
+                fontSize={16}
+                fontFamily="bold"
+              >
+                Confirm
+              </CustomText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </CustomActionSheet.Container>
     </>
   );
 }
